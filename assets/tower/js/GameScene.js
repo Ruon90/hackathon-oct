@@ -33,7 +33,7 @@ export default class GameScene extends Phaser.Scene {
         // Add background
         const background = this.add.image(800, 600, "background");
 
-        this.player = this.physics.add.sprite(800, 600, "player");
+        this.player = this.physics.add.sprite(800, 621, "player");
         this.keys = this.input.keyboard.addKeys({
             up: Phaser.Input.Keyboard.KeyCodes.W,
             down: Phaser.Input.Keyboard.KeyCodes.S,
@@ -56,27 +56,220 @@ export default class GameScene extends Phaser.Scene {
             .setCollideWorldBounds(true)
             .setDrag(500, 500);
 
-        this.bullets = this.physics.add.group();
+        this.bullets = this.physics.add.group({});
         this.enemies = this.physics.add.group();
         // wall collision
+        const wallData = [
+            {
+                x: 740,
+                y: 219,
+                displayW: 1118,
+                displayH: 29,
+                bodyW: 1118,
+                bodyH: 29,
+            },
+            {
+                x: 770,
+                y: 1,
+                displayW: 1460,
+                displayH: 29,
+                bodyW: 1460,
+                bodyH: 29,
+            },
+            {
+                x: 800,
+                y: 205,
+                displayW: 25,
+                displayH: 370,
+                bodyW: 25,
+                bodyH: 370,
+            },
+            {
+                x: 800,
+                y: 395,
+                displayW: 250,
+                displayH: 25,
+                bodyW: 250,
+                bodyH: 25,
+            },
+            {
+                x: 322,
+                y: 405,
+                displayW: 25,
+                displayH: 340,
+                bodyW: 25,
+                bodyH: 340,
+            },
+            {
+                x: 322,
+                y: 845,
+                displayW: 25,
+                displayH: 250,
+                bodyW: 25,
+                bodyH: 250,
+            },
+            {
+                x: 322,
+                y: 960,
+                displayW: 675,
+                displayH: 30,
+                bodyW: 675,
+                bodyH: 30,
+            },
+            {
+                x: 645,
+                y: 855,
+                displayW: 25,
+                displayH: 210,
+                bodyW: 25,
+                bodyH: 210,
+            },
+            {
+                x: 959,
+                y: 855,
+                displayW: 25,
+                displayH: 210,
+                bodyW: 25,
+                bodyH: 210,
+            },
+            {
+                x: 985,
+                y: 1205,
+                displayW: 25,
+                displayH: 210,
+                bodyW: 25,
+                bodyH: 210,
+            },
+            {
+                x: 615,
+                y: 1205,
+                displayW: 25,
+                displayH: 210,
+                bodyW: 25,
+                bodyH: 210,
+            },
+            {
+                x: 320,
+                y: 1195,
+                displayW: 580,
+                displayH: 25,
+                bodyW: 580,
+                bodyH: 25,
+            },
+            {
+                x: 800,
+                y: 540,
+                displayW: 220,
+                displayH: 15,
+                bodyW: 220,
+                bodyH: 15,
+            },
+            {
+                x: 1285,
+                y: 410,
+                displayW: 25,
+                displayH: 345,
+                bodyW: 25,
+                bodyH: 345,
+            },
+            {
+                x: 1585,
+                y: 310,
+                displayW: 25,
+                displayH: 465,
+                bodyW: 25,
+                bodyH: 465,
+            },
+            {
+                x: 1485,
+                y: 25,
+                displayW: 195,
+                displayH: 135,
+                bodyW: 195,
+                bodyH: 135,
+            },
+            {
+                x: 680,
+                y: 580,
+                displayW: 15,
+                displayH: 92,
+                bodyW: 15,
+                bodyH: 92,
+            },
+            {
+                x: 931,
+                y: 580,
+                displayW: 15,
+                displayH: 89,
+                bodyW: 15,
+                bodyH: 89,
+            },
+            {
+                x: 1273,
+                y: 971,
+                displayW: 650,
+                displayH: 25,
+                bodyW: 650,
+                bodyH: 25,
+            },
+            {
+                x: 1295,
+                y: 855,
+                displayW: 25,
+                displayH: 250,
+                bodyW: 25,
+                bodyH: 250,
+            },
+            {
+                x: 1265,
+                y: 1191,
+                displayW: 650,
+                displayH: 20,
+                bodyW: 650,
+                bodyH: 20,
+            },
+            {
+                x: 1590,
+                y: 1010,
+                displayW: 24,
+                displayH: 650,
+                bodyW: 25,
+                bodyH: 650,
+            },
+            {
+                x: 10,
+                y: 1010,
+                displayW: 24,
+                displayH: 650,
+                bodyW: 24,
+                bodyH: 650,
+            },
+            {
+                x: 10,
+                y: 250,
+                displayW: 24,
+                displayH: 650,
+                bodyW: 24,
+                bodyH: 650,
+            },
+        ];
         this.walls = this.physics.add.staticGroup();
-        this.walls
-            .create(740, 230)
-            .setDisplaySize(1125, 25)
-            .setSize(1125, 35)
-            .setVisible(true)
-            .refreshBody();
-        this.walls
-            .create(800, 210)
-            .setDisplaySize(30, 405)
-            .setSize(20, 325)
-            .setVisible(true)
-            .refreshBody();
 
+        wallData.forEach(({ x, y, displayW, displayH, bodyW, bodyH }) => {
+            this.walls
+                .create(x, y)
+                .setDisplaySize(displayW, displayH)
+                .setSize(bodyW, bodyH)
+                .setVisible(false) // or true for debugging
+                .refreshBody();
+        });
         this.physics.add.collider(this.player, this.walls);
-        this.physics.add.collider(this.bullets, this.walls, (bullet) =>
-            bullet.destroy()
-        );
+        this.physics.add.collider(this.bullets, this.walls, (bullet, wall) => {
+            if (bullet.active) bullet.destroy();
+        });
+        this.physics.add.overlap(this.bullets, this.walls, (bullet, wall) => {
+            bullet.destroy();
+        });
         this.scoreText = this.add.text(10, 10, "Score: 0", {
             fontSize: "20px",
             fill: "#fff",
@@ -194,7 +387,7 @@ export default class GameScene extends Phaser.Scene {
             "bullet"
         );
         this.physics.world.enable(bullet);
-
+        bullet.setScale(0.2);
         bullet.setOrigin(-1.1, 0.4); // X = center, Y = lower down
 
         const angle = Phaser.Math.Angle.Between(
@@ -206,7 +399,7 @@ export default class GameScene extends Phaser.Scene {
         this.physics.velocityFromRotation(angle, 700, bullet.body.velocity);
 
         bullet.setRotation(angle); // Optional: rotate bullet to face direction
-        bullet.setScale(0.2);
+
         this.player.anims.play("shoot", true);
         this.player.setVelocity(0); // Stop player movement while shooting
     }

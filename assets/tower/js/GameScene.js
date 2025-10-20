@@ -24,6 +24,22 @@ export default class GameScene extends Phaser.Scene {
                 frameHeight: 450, // adjust to your sprite frame height
             }
         );
+        this.load.spritesheet(
+            "wall_impact",
+            "assets/tower/images/wall_impact.png",
+            {
+                frameWidth: 349, // adjust to your sprite frame width
+                frameHeight: 292, // adjust to your sprite frame height
+            }
+        );
+        this.load.spritesheet(
+            "enemy_impact",
+            "assets/tower/images/enemy_impact.png",
+            {
+                frameWidth: 321, // adjust to your sprite frame width
+                frameHeight: 240, // adjust to your sprite frame height
+            }
+        );
     }
 
     create() {
@@ -265,7 +281,16 @@ export default class GameScene extends Phaser.Scene {
         });
         this.physics.add.collider(this.player, this.walls);
         this.physics.add.collider(this.bullets, this.walls, (bullet, wall) => {
-            if (bullet.active) bullet.destroy();
+            // Create impact sprite at bullet position
+            const impact = this.add.sprite(bullet.x, bullet.y, "wall_impact");
+            impact.setScale(0.2);
+            impact.play("wall_impact");
+
+            // Destroy bullet immediately
+            bullet.destroy();
+
+            // Remove impact sprite after animation completes
+            impact.on("animationcomplete", () => impact.destroy());
         });
         this.physics.add.overlap(this.bullets, this.walls, (bullet, wall) => {
             bullet.destroy();
@@ -302,6 +327,24 @@ export default class GameScene extends Phaser.Scene {
                 end: 3,
             }),
             frameRate: 14,
+            repeat: 0,
+        });
+        this.anims.create({
+            key: "wall_impact",
+            frames: this.anims.generateFrameNumbers("wall_impact", {
+                start: 0,
+                end: 2,
+            }),
+            frameRate: 9,
+            repeat: 0,
+        });
+        this.anims.create({
+            key: "enemy_impact",
+            frames: this.anims.generateFrameNumbers("enemy_impact", {
+                start: 0,
+                end: 2,
+            }),
+            frameRate: 9,
             repeat: 0,
         });
         this.input.on("pointerdown", () => {
@@ -388,7 +431,7 @@ export default class GameScene extends Phaser.Scene {
         );
         this.physics.world.enable(bullet);
         bullet.setScale(0.2);
-        bullet.setOrigin(-1.1, 0.4); // X = center, Y = lower down
+        bullet.setOrigin(0.5, 0.5); // X = center, Y = lower down
 
         const angle = Phaser.Math.Angle.Between(
             this.player.x,
@@ -399,7 +442,7 @@ export default class GameScene extends Phaser.Scene {
         this.physics.velocityFromRotation(angle, 700, bullet.body.velocity);
 
         bullet.setRotation(angle); // Optional: rotate bullet to face direction
-
+        bullet.body.angle = angle;
         this.player.anims.play("shoot", true);
         this.player.setVelocity(0); // Stop player movement while shooting
     }
@@ -416,8 +459,16 @@ export default class GameScene extends Phaser.Scene {
     }
 
     hitEnemy(bullet, enemy) {
+        // Create impact sprite at enemy position
+        const impact = this.add.sprite(enemy.x, enemy.y, "enemy_impact");
+        impact.setScale(0.4);
+        impact.play("enemy_impact");
+        // Remove impact sprite after animation completes
+        impact.on("animationcomplete", () => impact.destroy());
         bullet.destroy();
+
         enemy.destroy();
+
         this.score += 1;
         this.scoreText.setText("Score: " + this.score);
     }

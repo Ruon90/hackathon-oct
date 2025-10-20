@@ -1,0 +1,57 @@
+.arcade-header {
+    background-image: url("/assets/images/Arcade-legends-header.png");
+    background-size: cover;
+
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+body {
+    background-image: url("/assets/images/Synthwave-background.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.arcade-card .card-img-top {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    max-height: 400px;
+    background-color: transparent;
+    border: none;
+}
+
+.card-img-top {
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.card-img-top:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 15px #ff00ff);
+}
+/* .lead {
+    position: relative;
+    color: white;
+    text-justify: center;
+    text-align: center;
+} */
+.card {
+    display: flex;
+
+    background-color: transparent;
+    border: none;
+}
+.container {
+    flex: 1;
+    position: relative;
+    text-align: center;
+    color: white;
+}
+
+footer {
+    margin-top: auto;
+}

@@ -4,12 +4,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Arcade Legends</title>
+    <link rel="icon" href="assets/images/favicon-arcade.png" type="image/png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body>
-    <a href="tower.html">Tower Defense Game</a>
-    <a href="orb-blasting.html">Orb Blasting Game</a>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Arcade Legends</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tower.html">Tower Defense Game</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="orb-blasting.html">Orb Blasting Game</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <header class="arcade-header">
+        <img src="/assets/images/Arcade-legends-header.png" alt="Arcade Legends Header" class="img-fluid">
+
+    </header>
+
+    <div class="container py-5">
+        <div class="row g-4">
+            <!-- Arcade Machine 1 -->
+            <div class="col-md-4">
+                <div class="card arcade-card h-100">
+                    <img src="assets/images/pink-arcade-edit.png" class="card-img-top" alt="Arcade Machine 1">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Arcade Legend 1</h5>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arcade Machine 2 -->
+            <div class="col-md-4">
+                <div class="card arcade-card h-100">
+                    <img src="assets/images/yellow-arcade.png" class="card-img-top" alt="Arcade Machine 2">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Arcade Legend 2</h5>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arcade Machine 3 -->
+            <div class="col-md-4">
+                <div class="card arcade-card h-100">
+                    <img src="assets/images/blue-arcade.png" class="card-img-top" alt="Arcade Machine 3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Arcade Legend 3</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <div class="container">
+            <p class="mb-0">&copy; 2025 Game Testing. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="assets/js/main.js"></script>
+
 </body>
 
 </html>

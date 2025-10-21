@@ -40,6 +40,7 @@ export default class GameScene extends Phaser.Scene {
                 frameHeight: 240, // adjust to your sprite frame height
             }
         );
+        this.load.audio("gameMusic", "assets/tower/audio/game_music.mp3");
     }
 
     create() {
@@ -50,6 +51,7 @@ export default class GameScene extends Phaser.Scene {
         const background = this.add.image(800, 600, "background");
 
         this.player = this.physics.add.sprite(800, 621, "player");
+        this.player.setDepth(2);
         this.keys = this.input.keyboard.addKeys({
             up: Phaser.Input.Keyboard.KeyCodes.W,
             down: Phaser.Input.Keyboard.KeyCodes.S,
@@ -372,6 +374,11 @@ export default class GameScene extends Phaser.Scene {
                 }
             });
         }
+        this.gameMusic = this.sound.add("gameMusic", {
+            loop: true,
+            volume: 0.6,
+        });
+        this.gameMusic.play();
     }
 
     update() {
@@ -432,7 +439,7 @@ export default class GameScene extends Phaser.Scene {
         this.physics.world.enable(bullet);
         bullet.setScale(0.2);
         bullet.setOrigin(0.5, 0.5); // X = center, Y = lower down
-
+        bullet.setDepth(1);
         const angle = Phaser.Math.Angle.Between(
             this.player.x,
             this.player.y,

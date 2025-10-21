@@ -43,6 +43,8 @@ export default class GameScene extends Phaser.Scene {
         );
         this.load.audio("gameMusic", "assets/tower/audio/game_music.mp3");
         this.load.audio("gunshot", "assets/tower/audio/gunshot.mp3");
+        this.load.audio("enemyDestroy", "assets/tower/audio/enemy_destroy.mp3");
+        this.load.audio("bulletHit", "assets/tower/audio/bullethit.mp3");
     }
 
     create() {
@@ -77,7 +79,8 @@ export default class GameScene extends Phaser.Scene {
             .setOrigin(0.5, 0.5)
             .setDisplaySize(96, 96)
             .setCollideWorldBounds(true)
-            .setDrag(500, 500);
+            .setDrag(500, 500)
+            .setScale(0.25);
 
         this.bullets = this.physics.add.group({});
         this.enemies = this.physics.add.group();
@@ -292,6 +295,8 @@ export default class GameScene extends Phaser.Scene {
             const impact = this.add.sprite(bullet.x, bullet.y, "wall_impact");
             impact.setScale(0.2);
             impact.play("wall_impact");
+            const bulletHit = this.sound.add("bulletHit", { volume: 0.85 });
+            bulletHit.play();
 
             // Destroy bullet immediately
             bullet.destroy();
@@ -382,15 +387,7 @@ export default class GameScene extends Phaser.Scene {
             frameRate: 10,
             repeat: -1,
         });
-        // Ensure the player returns to idle after the shoot animation finishes
-        if (this.player) {
-            this.player.on("animationcomplete", (animation, frame, sprite) => {
-                if (animation.key === "shoot") {
-                    // reset to idle frame after shooting
-                    sprite.setFrame(0);
-                }
-            });
-        }
+
         this.gameMusic = this.sound.add("gameMusic", {
             loop: true,
             volume: 0.6,
@@ -439,7 +436,6 @@ export default class GameScene extends Phaser.Scene {
             this.keys.down.isDown;
 
         // If the shoot animation is currently playing, don't override it with walk/idle
-
         if (!isShooting) {
             if (moving) {
                 this.player.play("walk", true);
@@ -494,6 +490,8 @@ export default class GameScene extends Phaser.Scene {
         // Remove impact sprite after animation completes
         impact.on("animationcomplete", () => impact.destroy());
         bullet.destroy();
+        const eDestroy = this.sound.add("enemyDestroy", { volume: 0.85 });
+        eDestroy.play();
 
         enemy.destroy();
 

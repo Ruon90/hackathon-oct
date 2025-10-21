@@ -23,7 +23,10 @@ export default class MenuScene extends Phaser.Scene {
         this.load.audio("menuMusic", "assets/tower/audio/menu_music.mp3");
         this.load.audio("rainfall", "assets/tower/audio/rainfall.mp3");
         this.load.audio("lightning", "assets/tower/audio/lightning.mp3");
-        this.load.image("raindrop", "assets/tower/images/raindrop.png");
+        this.load.spritesheet("raindrop", "assets/tower/images/raindrop.png", {
+            frameWidth: 600, // adjust to match actual frame width
+            frameHeight: 900, // adjust to match actual frame height
+        });
     }
     create() {
         // sky
@@ -44,10 +47,33 @@ export default class MenuScene extends Phaser.Scene {
             frameRate: 2,
             repeat: -1,
         });
-
+        this.anims.create({
+            key: "rainFall",
+            frames: this.anims.generateFrameNumbers("raindrop", {
+                start: 0,
+                end: 2,
+            }),
+            frameRate: 5,
+            repeat: -1,
+        });
+        const rainLayer = this.add.sprite(150, 370, "raindrop");
+        rainLayer.play("rainFall");
+        rainLayer.setScrollFactor(0.1);
+        rainLayer.setDepth(1); // make sure it's above the background
+        rainLayer.setAlpha(0.46); // make it semi-transparent
+        rainLayer.setScale(0.8); // scale to cover more area
+        rainLayer.rotation = 0.1; // slight tilt for effect
+        const rainLayer2 = this.add.sprite(450, 370, "raindrop");
+        rainLayer2.play("rainFall");
+        rainLayer2.setScrollFactor(0.1);
+        rainLayer2.setDepth(1);
+        rainLayer2.setAlpha(0.46); // make it semi-transparent
+        rainLayer2.setScale(0.8); // scale to cover more area
+        rainLayer2.rotation = 0.1; // slight tilt for effect
         const cloudLayer1 = this.add.sprite(200, 100, "clouds");
         cloudLayer1.play("cloudDrift");
         cloudLayer1.setScrollFactor(0.3); // optional parallax effect
+        cloudLayer1.setDepth(2); // make sure it's above the background
         this.cloudLayer1 = this.add.sprite(-50, 200, "clouds").setScale(0.8);
         this.cloudLayer1.play("cloudDrift");
         this.cloudLayer1.setDepth(2); // make sure it's above the background

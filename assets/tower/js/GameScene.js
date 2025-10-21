@@ -7,10 +7,10 @@ export default class GameScene extends Phaser.Scene {
     preload() {
         this.load.spritesheet(
             "player",
-            "assets/tower/images/tsprite_shoot.png",
+            "assets/tower/images/tsprite_shoot2.png",
             {
                 frameWidth: 322,
-                frameHeight: 338,
+                frameHeight: 450,
             }
         );
         this.load.image("bullet", "assets/tower/images/bullet_static.png");
@@ -24,6 +24,7 @@ export default class GameScene extends Phaser.Scene {
                 frameHeight: 450, // adjust to your sprite frame height
             }
         );
+
         this.load.spritesheet(
             "wall_impact",
             "assets/tower/images/wall_impact.png",
@@ -41,6 +42,7 @@ export default class GameScene extends Phaser.Scene {
             }
         );
         this.load.audio("gameMusic", "assets/tower/audio/game_music.mp3");
+        this.load.audio("gunshot", "assets/tower/audio/gunshot.mp3");
     }
 
     create() {
@@ -51,6 +53,9 @@ export default class GameScene extends Phaser.Scene {
         const background = this.add.image(800, 600, "background");
 
         this.player = this.physics.add.sprite(800, 621, "player");
+        this.lastFired = 0;
+        this.fireRate = 1500; // milliseconds between shots
+        this.player.canMove = true;
         this.player.setDepth(2);
         this.keys = this.input.keyboard.addKeys({
             up: Phaser.Input.Keyboard.KeyCodes.W,
@@ -349,10 +354,22 @@ export default class GameScene extends Phaser.Scene {
             frameRate: 9,
             repeat: 0,
         });
+
         this.input.on("pointerdown", () => {
+            const now = this.time.now;
+
             if (this.player) {
-                this.player.anims.play("shoot", true);
-                this.fireBullet();
+                if (now - this.lastFired > this.fireRate) {
+                    this.player.anims.play("shoot", true);
+                    this.fireBullet(); // your bullet firing function
+                    this.lastFired = now;
+                    // Stop player movement while shooting
+                    this.player.canMove = false;
+
+                    this.time.delayedCall(500, () => {
+                        this.player.canMove = true;
+                    });
+                }
             }
         });
         // walk animaiton
@@ -389,18 +406,19 @@ export default class GameScene extends Phaser.Scene {
             this.player.anims.isPlaying;
 
         this.player.setVelocity(0);
-
-        if (this.keys.left.isDown) {
-            this.player.setVelocityX(-200);
-        }
-        if (this.keys.right.isDown) {
-            this.player.setVelocityX(200);
-        }
-        if (this.keys.up.isDown) {
-            this.player.setVelocityY(-200);
-        }
-        if (this.keys.down.isDown) {
-            this.player.setVelocityY(200);
+        if (this.player.canMove) {
+            if (this.keys.left.isDown) {
+                this.player.setVelocityX(-200);
+            }
+            if (this.keys.right.isDown) {
+                this.player.setVelocityX(200);
+            }
+            if (this.keys.up.isDown) {
+                this.player.setVelocityY(-200);
+            }
+            if (this.keys.down.isDown) {
+                this.player.setVelocityY(200);
+            }
         }
         if (Phaser.Input.Keyboard.JustDown(this.spaceKey)) {
             this.fireBullet();
@@ -430,6 +448,7 @@ export default class GameScene extends Phaser.Scene {
             }
         }
     }
+
     fireBullet() {
         const bullet = this.bullets.create(
             this.player.x,
@@ -452,6 +471,8 @@ export default class GameScene extends Phaser.Scene {
         bullet.body.angle = angle;
         this.player.anims.play("shoot", true);
         this.player.setVelocity(0); // Stop player movement while shooting
+        this.gunshot = this.sound.add("gunshot", { volume: 0.5 });
+        this.gunshot.play();
     }
 
     spawnEnemy() {

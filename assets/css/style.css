@@ -33,12 +33,7 @@ body {
     transform: scale(1.05);
     filter: drop-shadow(0 0 15px #ff00ff);
 }
-/* .lead {
-    position: relative;
-    color: white;
-    text-justify: center;
-    text-align: center;
-} */
+
 .card {
     display: flex;
 
@@ -54,4 +49,96 @@ body {
 
 footer {
     margin-top: auto;
+}
+#gameCanvas {
+    background-image: url("/assets/froggy/road.png");
+    background-size: cover;
+    border: 2px solid #0ff;
+    box-shadow: 0 0 20px #0ff;
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+}
+.overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 32px;
+    color: #0ff;
+    font-family: "Orbitron", sans-serif;
+    text-shadow: 0 0 10px #0ff;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 20px 40px;
+    border: 2px solid #0ff;
+    border-radius: 10px;
+    z-index: 10;
+    text-align: center;
+}
+
+.flicker {
+    animation: flicker 1.5s infinite alternate;
+}
+
+@keyframes flicker {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes pulseGlow {
+    0% {
+        text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+        box-shadow: 0 0 10px #0ff;
+    }
+    100% {
+        text-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
+        box-shadow: 0 0 20px #0ff;
+    }
+}
+.game-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#froggerheader {
+    font-family: "Orbitron", sans-serif;
+    font-size: 48px;
+    color: #0ff;
+    text-align: center;
+    text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+    margin: 40px auto 20px;
+    padding: 10px 20px;
+    border: 2px solid #0ff;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    width: fit-content;
+    max-width: 90%;
+    animation: pulseGlow 2s infinite alternate;
+}
+#playAgainBtn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-family: "Orbitron", sans-serif;
+    color: #0ff;
+    background-color: transparent;
+    border: 2px solid #0ff;
+    border-radius: 8px;
+    cursor: pointer;
+    text-shadow: 0 0 10px #0ff;
+    box-shadow: 0 0 10px #0ff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#playAgainBtn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px #0ff;
 }

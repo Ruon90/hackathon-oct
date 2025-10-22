@@ -11,6 +11,8 @@ function startGame() {
         isGameRunning = true;
         trafficSound.play();
         gameLoopId = requestAnimationFrame(gameLoop);
+        document.getElementById("startOverlay").style.display = "none";
+        document.getElementById("pauseOverlay").style.display = "none";
     }
 }
 function pauseGame() {
@@ -18,6 +20,7 @@ function pauseGame() {
         isGameRunning = false;
         trafficSound.pause();
         cancelAnimationFrame(gameLoopId);
+        document.getElementById("pauseOverlay").style.display = "block";
     }
 }
 
@@ -31,10 +34,10 @@ const frog = {
 
 const cars = [];
 const frogImg = new Image();
-frogImg.src = "frog.png";
+frogImg.src = "/assets/froggy/frog.png";
 
 const carImg = new Image();
-carImg.src = "car.png";
+carImg.src = "/assets/froggy/car.png";
 
 function generateCars(level) {
     cars.length = 0;
@@ -140,7 +143,7 @@ function update() {
             trafficSound.play(); // restart traffic for next level
         } else {
             winSound.play();
-            alert("You win the game!");
+            document.getElementById("winOverlay").style.display = "block";
             level = 1;
             frog.y = 460;
             generateCars(level);
@@ -205,13 +208,19 @@ function gameLoop() {
     draw();
     gameLoopId = requestAnimationFrame(gameLoop);
 }
-const hopSound = new Audio("hop.wav");
-const trafficSound = new Audio("traffic.wav");
-const winSound = new Audio("win.wav");
-const levelUpSound = new Audio("levelup.wav");
+const hopSound = new Audio("/assets/froggy/hop.wav");
+const trafficSound = new Audio("/assets/froggy/traffic.wav");
+const winSound = new Audio("/assets/froggy/win.wav");
+const levelUpSound = new Audio("/assets/froggy/levelup.wav");
 trafficSound.loop = true;
 
 trafficSound.volume = 0.5;
 
 // Start game manually (e.g. with Enter key or button)
-startGame();
+document.getElementById("playAgainBtn").addEventListener("click", () => {
+    document.getElementById("winOverlay").style.display = "none";
+    level = 1;
+    frog.y = 460;
+    generateCars(level);
+    startGame();
+});

@@ -2,19 +2,77 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Frogger </title>
-    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Arcade Legends</title>
+    <link rel="icon" href="assets/images/favicon-arcade.png" type="image/png">
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body>
-    <h1>🐸 Froggy </h1>
-    <canvas id="gameCanvas" width="400" height="500"></canvas>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Arcade Legends</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tower.html">Tower Defense Game</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="orb-blasting.html">Orb Blasting Game</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="froggy.html">Froggy Game</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- <header class="arcade-header">
+        <img src="/assets/images/Arcade-legends-header.png" alt="Arcade Legends Header" class="img-fluid">
+
+    </header> -->
+
+    <h1 id="froggerheader">🐸 Froggy</h1>
+    <div class="game-wrapper">
+        <div id="startOverlay" class="overlay flicker">Press Enter to Start</div>
+        <canvas id="gameCanvas" width="400" height="500"></canvas>
+        <div id="pauseOverlay" class="overlay flicker" style="display: none;">Paused<br>Press Enter or Space to Resume
+        </div>
+    </div>
+
+    <div id="winOverlay" class="overlay flicker" style="display: none;">
+        You Win! 🎉<br><br>
+        <button id="playAgainBtn">Play Again</button>
+    </div>
+
+    <script src="assets/froggy/game.js"></script>
 
 
 
-    <script src="game.js"></script>
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <div class="container">
+            <p class="mb-0"> 2025 Arcade Legends. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
 </body>
 
 </html>

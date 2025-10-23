@@ -39,7 +39,7 @@ body {
     width: 100%;
     height: auto;
     object-fit: contain;
-    max-height: 400px;
+    max-height: 350px;
     background-color: transparent;
     border: none;
 }
@@ -48,15 +48,15 @@ body {
     transition: transform 0.3s ease, filter 0.3s ease;
 }
 #card-yellow:hover {
-    transform: scale(1.05);
+    transform: scale(1.125);
     filter: drop-shadow(0 0 15px #fbff00);
 }
 #card-blue:hover {
-    transform: scale(1.05);
+    transform: scale(1.125);
     filter: drop-shadow(0 0 15px #00ffff);
 }
 .card-img-top:hover {
-    transform: scale(1.05);
+    transform: scale(1.125);
     filter: drop-shadow(0 0 15px #ff00ff);
 }
 

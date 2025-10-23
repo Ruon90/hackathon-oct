@@ -4,6 +4,7 @@ import DeathScene from "./DeathScene.js";
 import LoadingScene from "./LoadingScene.js";
 const config = {
     type: Phaser.AUTO,
+    parent: "game-container",
     width: 600,
     height: 900,
     physics: {

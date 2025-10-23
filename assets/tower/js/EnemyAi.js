@@ -109,6 +109,9 @@ export default class EnemyAi extends Phaser.Physics.Arcade.Sprite {
             this.isMoving = false;
             return;
         }
+        if (this.player._isTransitioning) {
+            return;
+        }
         this.scene.physics.moveToObject(this, this.player, this.speed + 75);
     }
 
@@ -119,7 +122,6 @@ export default class EnemyAi extends Phaser.Physics.Arcade.Sprite {
             return;
         }
         this.setVelocity(0, 0);
-        // Add attack animation or damage logic here
     }
 
     // Freeze movement and flash transparency for `duration` ms, then unfreeze.

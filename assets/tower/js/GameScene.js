@@ -58,10 +58,12 @@ export default class GameScene extends Phaser.Scene {
                 frameHeight: 516, // adjust to your sprite frame height
             }
         );
+        this.load.audio("ouch", "assets/tower/audio/ouch.mp3");
         this.load.audio("gameMusic", "assets/tower/audio/game_music.mp3");
         this.load.audio("gunshot", "assets/tower/audio/gunshot.mp3");
         this.load.audio("enemyDestroy", "assets/tower/audio/enemy_destroy.mp3");
         this.load.audio("bulletHit", "assets/tower/audio/bullethit.mp3");
+        this.load.audio("deathSound", "assets/tower/audio/game-over.mp3");
     }
 
     create() {
@@ -90,7 +92,7 @@ export default class GameScene extends Phaser.Scene {
         );
         // Camera settings
         this.cameras.main.startFollow(this.player);
-        this.cameras.main.setZoom(0.8); // Default is 1. Lower = zoom out
+        this.cameras.main.setZoom(1); // Default is 1. Lower = zoom out
         this.cameras.main.setBounds(0, 0, 1600, 1200);
 
         background.setOrigin(0.5, 0.5).setDisplaySize(1600, 1200);
@@ -100,7 +102,7 @@ export default class GameScene extends Phaser.Scene {
             .setDisplaySize(96, 96)
             .setCollideWorldBounds(true)
             .setDrag(500, 500)
-            .setScale(0.25);
+            .setScale(0.2);
 
         this.bullets = this.physics.add.group({});
         this.enemies = this.physics.add.group();
@@ -313,7 +315,7 @@ export default class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.bullets, this.walls, (bullet, wall) => {
             // Create impact sprite at bullet position
             const impact = this.add.sprite(bullet.x, bullet.y, "wall_impact");
-            impact.setScale(0.2);
+            impact.setScale(0.15);
             impact.play("wall_impact");
             const bulletHit = this.sound.add("bulletHit", { volume: 0.85 });
             bulletHit.play();
@@ -532,7 +534,42 @@ export default class GameScene extends Phaser.Scene {
                 enemy.setFrame(0);
             }
             if (this.playerLives <= 0) {
-                this.scene.start("DeathScene", { score: this.score });
+                // Prevent multiple transitions
+                if (this._isTransitioning) return;
+                this._isTransitioning = true;
+                this.player.canMove = false;
+                // Make the scene/player invulnerable during the fade so overlap handler ignores damage
+                this.isInvulnerable = true;
+                if (this.player) this.player.isInvulnerable = true;
+                // Disable enemy collisions during transition so no further damage/clipping occurs
+                this.enemies.children.iterate((en) => {
+                    if (en && en.body) {
+                        try {
+                            en.body.checkCollision.none = true;
+                        } catch (e) {}
+                    }
+                });
+                // Fade the camera over 3 seconds, then start DeathScene
+                this.cameras.main.fade(3000, 0, 0, 0);
+                this.cameras.main.once("camerafadeoutcomplete", () => {
+                    try {
+                        if (this.gameMusic && this.gameMusic.stop)
+                            this.gameMusic.stop();
+                    } catch (e) {}
+                    try {
+                        if (this.audioOuch && this.audioOuch.stop)
+                            this.audioOuch.stop();
+                    } catch (e) {}
+                    try {
+                        this.deathSound = this.sound.add("deathSound", {
+                            loop: false,
+                            volume: 0.6,
+                        });
+                        this.deathSound.play();
+                    } catch (e) {}
+
+                    this.scene.start("DeathScene", { score: this.score });
+                });
             }
         });
 
@@ -543,11 +580,49 @@ export default class GameScene extends Phaser.Scene {
         );
         // take damage
         this.physics.add.overlap(this.player, this.enemies, (player, enemy) => {
-            if (this.isInvulnerable) return;
+            // If the scene is invulnerable or we're already transitioning to death, ignore
+            if (this.isInvulnerable || this._isTransitioning) return;
 
             // Reduce health
             this.playerLives--;
+            // Clamp to zero to avoid negative lives
+            if (this.playerLives < 0) this.playerLives = 0;
+
+            this.audioOuch = this.sound.add("ouch", { volume: 0.4 });
+            this.audioOuch.play();
             this.livesText.setText("Lives: " + this.playerLives);
+
+            // If we've reached zero lives, start the fade transition immediately and skip knockback
+            if (this.playerLives <= 0) {
+                if (this._isTransitioning) return;
+                this._isTransitioning = true;
+                this.player.canMove = false;
+                this.isInvulnerable = true;
+                this.deathSound = this.sound.add("deathSound", {
+                    loop: false,
+                    volume: 0.6,
+                });
+                this.deathSound.play();
+                this.audioOuch.stop();
+                this.gameMusic.stop();
+                if (this.player) this.player.isInvulnerable = true;
+
+                // Disable enemy collisions during transition so no further damage/clipping occurs
+                this.enemies.children.iterate((en) => {
+                    if (en && en.body) {
+                        try {
+                            en.body.checkCollision.none = true;
+                        } catch (e) {}
+                    }
+                });
+                this.cameras.main.fade(2500, 0, 0, 0);
+                this.cameras.main.once("camerafadeoutcomplete", () => {
+                    this.scene.start("DeathScene", { score: this.score });
+                });
+
+                return;
+            }
+
             // Knockback both entities
             const dx = player.x - enemy.x;
             const dy = player.y - enemy.y;
@@ -624,9 +699,9 @@ export default class GameScene extends Phaser.Scene {
         const bullet = this.bullets.create(
             this.player.x,
             this.player.y,
-            "bullet_animated"
+            "bullet"
         );
-        bullet.play("shoot_bullet");
+        // bullet.play("shoot_bullet");
         this.physics.world.enable(bullet);
         bullet.setScale(0.1);
         bullet.setOrigin(0.5, 0.5); // X = center, Y = lower down
@@ -639,7 +714,7 @@ export default class GameScene extends Phaser.Scene {
         );
         this.physics.velocityFromRotation(angle, 700, bullet.body.velocity);
 
-        bullet.setRotation(angle + Phaser.Math.DegToRad(90)); // adjust because sprite faces up
+        bullet.setRotation(angle + Phaser.Math.DegToRad(0)); // adjust because sprite faces up
         bullet.body.angle = angle;
         this.player.anims.play("shoot", true);
         this.player.setVelocity(0); // Stop player movement while shooting
@@ -662,7 +737,7 @@ export default class GameScene extends Phaser.Scene {
         this.enemies.add(enemy);
         this.physics.add.collider(enemy, this.player);
         this.physics.add.collider(enemy, this.walls);
-        enemy.setScale(0.2);
+        enemy.setScale(0.15);
         // Initial state: use EnemyAi.freezeAndFlash to freeze & flash for 700ms
         enemy.isSpawning = true;
         enemy.freezeAndFlash(1200);
@@ -687,7 +762,7 @@ export default class GameScene extends Phaser.Scene {
 
         // Create impact sprite at enemy position
         const impact = this.add.sprite(enemy.x, enemy.y, "enemy_impact");
-        impact.setScale(0.4);
+        impact.setScale(0.35);
         impact.play("enemy_impact");
         // Remove impact sprite after animation completes
         impact.on("animationcomplete", () => impact.destroy());

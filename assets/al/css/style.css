@@ -1,8 +1,7 @@
-html,
 body {
     height: 100%;
     margin: 0;
-    background-image: url("/assets/al/images/Synthwave_background.png");
+    background-image: url("../images/Synthwave_background.png");
     background-size: cover;
 }
 
@@ -21,13 +20,25 @@ header {
     padding: 10px 20px;
     text-align: center;
     box-shadow: 0 0 10px #a020f0;
+    text-decoration: none;
+}
+
+button.btn:hover,
+a.btn:hover {
+    background-color: #b839e6;
+    cursor: pointer;
+}
+
+#mainMenuBtn {
+    position: relative;
+    z-index: 10;
 }
 
 #game {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-image: url("/assets/al/images/blastingBg.jpg");
+    background-image: url("../images/blastingBg.jpg");
     opacity: 0.9;
     background-size: cover;
     background-position: center;

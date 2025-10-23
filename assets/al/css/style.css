@@ -1,8 +1,7 @@
-html,
 body {
     height: 100%;
     margin: 0;
-    background-image: url("/assets/al/images/Synthwave_background.png");
+    background-image: url("../images/Synthwave_background.png");
     background-size: cover;
 }
 
@@ -21,13 +20,25 @@ header {
     padding: 10px 20px;
     text-align: center;
     box-shadow: 0 0 10px #a020f0;
+    text-decoration: none;
+}
+
+button.btn:hover,
+a.btn:hover {
+    background-color: #b839e6;
+    cursor: pointer;
+}
+
+#mainMenuBtn {
+    position: relative;
+    z-index: 10;
 }
 
 #game {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-image: url("/assets/al/images/blastingBg.jpg");
+    background-image: url("../images/blastingBg.jpg");
     opacity: 0.9;
     background-size: cover;
     background-position: center;
@@ -115,4 +126,39 @@ canvas {
     box-shadow: 0 0 10px #a020f0;
     max-width: 300px;
     text-align: center;
+}
+#mainMenuBtn {
+    display: inline-block;
+    margin: 20px auto;
+    padding: 12px 24px;
+    font-family: "Orbitron", sans-serif;
+    font-size: 1.1rem;
+    color: #0ff;
+    background-color: transparent;
+    border: 2px solid #0ff;
+    border-radius: 8px;
+    text-shadow: 0 0 5px #0ff;
+    box-shadow: 0 0 10px #0ff;
+    transition: all 0.3s ease;
+    animation: flicker 2s infinite alternate;
+}
+
+#mainMenuBtn:hover {
+    color: #f0f;
+    border-color: #f0f;
+    text-shadow: 0 0 10px #f0f;
+    box-shadow: 0 0 20px #f0f;
+    transform: scale(1.05);
+}
+
+@keyframes flicker {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.85;
+    }
+    100% {
+        opacity: 1;
+    }
 }

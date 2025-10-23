@@ -1,5 +1,5 @@
 .arcade-header {
-    background-image: url("/assets/images/Arcade-legends-header.png");
+    background-image: url("assets/images/Arcade-legends-header.png");
     background-size: cover;
 
     background-position: center;
@@ -7,7 +7,7 @@
 }
 
 body {
-    background-image: url("/assets/images/Synthwave-background.png");
+    background-image: url("../images/Synthwave-background.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -51,7 +51,7 @@ footer {
     margin-top: auto;
 }
 #gameCanvas {
-    background-image: url("/assets/froggy/road.png");
+    background-image: url("../froggy/road.png");
     background-size: cover;
     border: 2px solid #0ff;
     box-shadow: 0 0 20px #0ff;

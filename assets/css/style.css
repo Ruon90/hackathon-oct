@@ -123,6 +123,51 @@ footer {
     max-width: 90%;
     animation: pulseGlow 2s infinite alternate;
 }
+
+.instruction-wrapper .row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.instruction-box {
+    flex: 1;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #0ff;
+    border-radius: 10px;
+    color: #0ff;
+    font-family: "Orbitron", sans-serif;
+    box-shadow: 0 0 10px #0ff;
+    transition: transform 0.3s ease;
+}
+
+.instruction-box:hover {
+    transform: scale(1.02);
+}
+
+.glow-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
+}
+
+.glow-text {
+    font-size: 1rem;
+    line-height: 1.5;
+    text-shadow: 0 0 5px #0ff;
+}
+
+@media (max-width: 768px) {
+    .instruction-box {
+        text-align: center;
+        min-height: auto;
+    }
+}
+
 #playAgainBtn {
     margin-top: 20px;
     padding: 10px 20px;
@@ -141,4 +186,55 @@ footer {
 #playAgainBtn:hover {
     transform: scale(1.1);
     box-shadow: 0 0 20px #0ff;
+}
+
+.navbar {
+    background: linear-gradient(90deg, #0ff, #f0f, #0ff);
+    border-bottom: 2px solid #f0f;
+    box-shadow: 0 0 15px #0ff;
+    animation: pulseGlow 3s infinite alternate;
+}
+
+.navbar-brand,
+.nav-link {
+    font-family: "Orbitron", sans-serif;
+    color: #fff !important;
+    text-shadow: 0 0 5px #f0f, 0 0 10px #0ff;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #0ff !important;
+    text-shadow: 0 0 10px #0ff, 0 0 20px #f0f;
+}
+
+footer {
+    background: linear-gradient(90deg, #000, #111, #000);
+    border-top: 2px solid #f0f;
+    box-shadow: 0 0 15px #f0f;
+    font-family: "Orbitron", sans-serif;
+    color: #0ff;
+    text-shadow: 0 0 5px #0ff;
+    animation: flickerFooter 2s infinite alternate;
+}
+
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 0 0 10px #0ff;
+    }
+    100% {
+        box-shadow: 0 0 20px #f0f;
+    }
+}
+
+@keyframes flickerFooter {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.85;
+    }
+    100% {
+        opacity: 1;
+    }
 }

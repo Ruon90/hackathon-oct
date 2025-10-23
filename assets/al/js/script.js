@@ -307,9 +307,9 @@ function removeMatch(targetOrbs) {
 }
 
 // sound effects
-const shootSound = new Audio("assets/sounds/blaster.mp3");
+const shootSound = new Audio("assets/al/sounds/blaster.mp3");
 shootSound.volume = 0.6; // optional: adjust volume (0.0 to 1.0)
-const popSound = new Audio("assets/sounds/pop.mp3");
+const popSound = new Audio("assets/al/sounds/pop.mp3");
 popSound.volume = 0.8; //
 
 // make any floating orbs (orbs that don't have a orb chain

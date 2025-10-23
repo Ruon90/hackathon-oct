@@ -351,7 +351,7 @@ export default class GameScene extends Phaser.Scene {
 
         this.spawnIndex = 0;
         this.baseMaxEnemies = 5; // starting cap
-        this.maxEnemiesHardCap = 50; // never allow more than this
+        this.maxEnemiesHardCap = 30; // never allow more than this
         this.maxEnemies = this.baseMaxEnemies;
         this.spawnedEnemies = 0;
         this.scoreText.setScrollFactor(0);

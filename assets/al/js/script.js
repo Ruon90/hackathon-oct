@@ -305,3 +305,105 @@ function removeMatch(targetOrbs) {
         return true;
     }
 }
+
+// sound effects
+const shootSound = new Audio("assets/sounds/blaster.mp3");
+shootSound.volume = 0.6; // optional: adjust volume (0.0 to 1.0)
+const popSound = new Audio("assets/sounds/pop.mp3");
+popSound.volume = 0.8; //
+
+// make any floating orbs (orbs that don't have a orb chain
+// that touch the ceiling) drop down the screen
+function dropFloatingorbs() {
+    const activeorbs = orbs.filter((orb) => orb.active);
+    activeorbs.forEach((orb) => (orb.processed = false));
+
+    // start at the orbs that touch the ceiling
+    let neighbors = activeorbs.filter((orb) => orb.y - grid <= wallSize);
+
+    // process all orbs that form a chain with the ceiling orbs
+    for (let i = 0; i < neighbors.length; i++) {
+        let neighbor = neighbors[i];
+
+        if (!neighbor.processed) {
+            neighbor.processed = true;
+            neighbors = neighbors.concat(getNeighbors(neighbor));
+        }
+    }
+
+    // any orb that is not processed doesn't touch the ceiling
+    activeorbs
+        .filter((orb) => !orb.processed)
+        .forEach((orb) => {
+            orb.active = false;
+            // create a particle orb that falls down the screen
+            particles.push({
+                x: orb.x,
+                y: orb.y,
+                color: orb.color,
+                radius: orb.radius,
+                active: true,
+            });
+        });
+}
+
+// fill the grid with inactive orbs
+for (let row = 0; row < 10; row++) {
+    for (let col = 0; col < (row % 2 === 0 ? 8 : 7); col++) {
+        // if the level has a orb at the location, create an active
+        // orb rather than an inactive one
+
+        const color = levelGrid[row]?.[col];
+        createOrbs(col * grid, row * grid, colorMap[color]);
+    }
+}
+
+// returns true when no active orbs remain
+function boardIsCleared() {
+    return !orbs.some((b) => b.active);
+}
+const curOrbsPos = {
+    // place the current orb horizontally in the middle of the screen
+    x: canvas.width / 2,
+    y: canvas.height - grid * 1.5,
+};
+
+const randomKey = colorKeys[Math.floor(Math.random() * colorKeys.length)];
+const curOrbs = {
+    x: curOrbsPos.x,
+    y: curOrbsPos.y,
+    color: colorMap[randomKey],
+    radius: grid / 2, // a circles radius is half the width (diameter)
+
+    // how fast the orb should go in either the x or y direction
+    speed: 9,
+
+    // orb velocity
+    dx: 0,
+    dy: 0,
+};
+
+const cannonImg = new Image();
+cannonImg.src = "assets/al/images/cannon.png";
+// adjust these values to match your sprite dimensions and pivot
+const CANNON_WIDTH = 128;
+const CANNON_HEIGHT = 192;
+const CANNON_PIVOT_X = 67; // pivot pixel inside sprite (x)
+const CANNON_PIVOT_Y = 25; // pivot pixel inside sprite (y)
+const CANNON_WORLD_X = curOrbsPos.x;
+const CANNON_WORLD_Y = curOrbsPos.y; // shift cannon below arrow
+
+// muzzle offset in sprite-local coordinates (where the projectile should start)
+// measured from sprite top-left. Tweak these to match muzzle tip.
+const MUZZLE_SPRITE_X = 28; // x pixel in sprite
+const MUZZLE_SPRITE_Y = 70; // y pixel in sprite
+
+// angle (in radians) of the shooting arrow
+let shootDeg = 0;
+
+// min/max angle (in radians) of the shooting arrow
+const minDeg = degToRad(-60);
+const maxDeg = degToRad(60);
+
+// the direction of movement for the arrow (-1 = left, 1 = right)
+let shootDir = 0;

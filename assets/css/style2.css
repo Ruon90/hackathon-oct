@@ -13,13 +13,26 @@
     align-self: center;
 }
 body {
-    background-image: url("../images/animated-bg.gif");
+    /* Background video is handled with a <video> element positioned behind content */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    position: relative;
+}
+
+/* Full-bleed background video that sits behind page content */
+#bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1; /* behind everything */
+    pointer-events: none; /* so it doesn't block clicks */
 }
 
 .arcade-card .card-img-top {

@@ -407,3 +407,31 @@ const maxDeg = degToRad(60);
 
 // the direction of movement for the arrow (-1 = left, 1 = right)
 let shootDir = 0;
+// reset the orb to shoot to the bottom of the screen
+function getNewOrbs() {
+    curOrbs.x = curOrbsPos.x;
+    curOrbs.y = curOrbsPos.y;
+    curOrbs.dx = curOrbs.dy = 0;
+
+    // determine available colors based on active orbs
+    const available = [];
+    orbs.forEach((orb) => {
+        if (orb.active && !available.includes(orb.color)) {
+            available.push(orb.color);
+        }
+    });
+
+    // pick a random colour from available set
+    const randIndex = getRandomInt(0, available.length - 1);
+    curOrbs.color = available[randIndex];
+}
+
+// handle collision between the current orb and another orb
+function handleCollision(orb) {
+    orb.color = curOrbs.color;
+    orb.active = true;
+    getNewOrbs();
+    removeMatch(orb);
+    dropFloatingorbs();
+    if (boardIsCleared()) nextLevel();
+}

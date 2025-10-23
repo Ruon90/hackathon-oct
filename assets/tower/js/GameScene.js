@@ -90,7 +90,7 @@ export default class GameScene extends Phaser.Scene {
             .setCollideWorldBounds(true)
             .setDrag(500, 500)
             .setScale(0.25);
-        this.input.setDefaultCursor("crosshair");
+
         this.bullets = this.physics.add.group({});
         this.enemies = this.physics.add.group();
         // wall collision
@@ -413,10 +413,26 @@ export default class GameScene extends Phaser.Scene {
 
         // Enemy AI & collisions - create an initial enemy via spawnEnemy()
         // spawnEnemy will add the enemy to the enemies group and set up colliders
-        this.spawnEnemy();
+        this.spawnPoints = [
+            { x: 528, y: 888 },
+            { x: 472, y: 297 },
+            { x: 1030, y: 879 },
+            { x: 956, y: 289 },
+            { x: 1494, y: 1114 },
+            { x: 136, y: 1074 },
+            { x: 141, y: 56 },
+            { x: 829, y: 72 },
+            { x: 1347, y: 107 },
+            { x: 1433, y: 864 },
+        ];
+
+        this.spawnIndex = 0;
+        this.maxEnemies = 4;
+        this.spawnedEnemies = 0;
     }
 
     update() {
+        this.input.setDefaultCursor("crosshair");
         const isShooting =
             this.player.anims &&
             this.player.anims.currentAnim &&
@@ -513,13 +529,26 @@ export default class GameScene extends Phaser.Scene {
     }
 
     spawnEnemy() {
-        const x = Phaser.Math.Between(50, 750);
-        const y = Phaser.Math.Between(50, 550);
-        const enemy = new EnemyAi(this, x, y, "enemy_walk", this.player);
+        if (this.spawnedEnemies >= this.maxEnemies) return;
+
+        const spawn = this.spawnPoints[this.spawnIndex];
+        const enemy = new EnemyAi(
+            this,
+            spawn.x,
+            spawn.y,
+            "enemy_walk",
+            this.player
+        );
+
         this.enemies.add(enemy);
         this.physics.add.collider(enemy, this.player);
         this.physics.add.collider(enemy, this.walls);
         enemy.setScale(0.2);
+
+        // Update counters
+        this.spawnedEnemies++;
+        this.spawnIndex = (this.spawnIndex + 1) % this.spawnPoints.length;
+
         return enemy;
     }
 
@@ -535,7 +564,7 @@ export default class GameScene extends Phaser.Scene {
         eDestroy.play();
 
         enemy.destroy();
-
+        this.spawnedEnemies--;
         this.score += 1;
         this.scoreText.setText("Score: " + this.score);
     }

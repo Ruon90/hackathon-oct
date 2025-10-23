@@ -12,7 +12,7 @@ const config = {
             debug: false,
         },
     },
-    scene: [MenuScene, GameScene, DeathScene],
+    scene: [LoadingScene, MenuScene, GameScene, DeathScene],
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,

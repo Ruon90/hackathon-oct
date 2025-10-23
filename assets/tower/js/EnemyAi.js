@@ -72,7 +72,7 @@ export default class EnemyAi extends Phaser.Physics.Arcade.Sprite {
         if (time > this.nextPatrolTime) {
             this.patrolIndex =
                 (this.patrolIndex + 1) % this.patrolPoints.length;
-            this.nextPatrolTime = time + 2000; // 2 seconds per direction
+            this.nextPatrolTime = time + 3500; // 3.5 seconds per direction
         }
     }
 

@@ -139,9 +139,8 @@ export default class MenuScene extends Phaser.Scene {
             loop: true,
             volume: 0.7,
         });
-        this.input.once("pointerdown", () => {
-            this.menuMusic.play();
-            this.rainfall.play();
-        });
+        this.menuMusic.play();
+        this.rainfall.play();
+        this.input.once("pointerdown", () => {});
     }
 }

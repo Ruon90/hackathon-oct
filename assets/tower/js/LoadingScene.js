@@ -2,25 +2,15 @@ export default class loadingScene extends Phaser.Scene {
     preload() {
         // Add the fill image first (or graphics object)
         this.load.image("barBg", "assets/tower/images/loadingbar.png");
-        this.load.image("barFill", "assets/tower/images/loadingbarfill.png");
-
-        this.barFill = this.add
-            .image(300, 450, "barFill")
-            .setOrigin(0.5)
-            .setCrop(0, 0, 0, 20);
-
-        // Track loading progress
-        this.load.on("progress", (value) => {
-            const fullWidth = this.barFill.width;
-            this.barFill.setCrop(0, 0, fullWidth * value, this.barFill.height);
-        });
-
+        this.load.image("continueButton", "assets/tower/images/continue.png");
         // Load all assets
     }
 
     create() {
-        const barBg = this.add.image(300, 450, "barBg").setOrigin(0.5);
-        this.barFill.setDepth(2); // ensure it's above the background
+        const barBg = this.add
+            .image(300, 300, "barBg")
+            .setOrigin(0.5)
+            .setScale(0.5);
 
         this.tweens.add({
             targets: barBg,
@@ -34,8 +24,14 @@ export default class loadingScene extends Phaser.Scene {
         });
     }
     update() {
-        // if (this.load.totalComplete === this.load.totalToLoad) {
-        //     this.scene.start("MenuScene");
-        // }
+        if (this.load.totalComplete === this.load.totalToLoad) {
+            this.add
+                .image(300, 500, "continueButton")
+                .setScale(0.25)
+                .setInteractive()
+                .on("pointerdown", () => {
+                    this.scene.start("MenuScene");
+                });
+        }
     }
 }

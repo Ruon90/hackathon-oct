@@ -435,3 +435,177 @@ function handleCollision(orb) {
     dropFloatingorbs();
     if (boardIsCleared()) nextLevel();
 }
+
+// game loop
+function loop() {
+    requestAnimationFrame(loop);
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    // move the shooting arrow
+    shootDeg = shootDeg + degToRad(2) * shootDir;
+
+    // prevent shooting arrow from going below/above min/max
+    if (shootDeg < minDeg) {
+        shootDeg = minDeg;
+    } else if (shootDeg > maxDeg) {
+        shootDeg = maxDeg;
+    }
+
+    // move current orb by it's velocity
+    curOrbs.x += curOrbs.dx;
+    curOrbs.y += curOrbs.dy;
+
+    // prevent orb from going through walls by changing its velocity
+    if (curOrbs.x - grid / 2 < wallSize) {
+        curOrbs.x = wallSize + grid / 2;
+        curOrbs.dx *= -1;
+    } else if (curOrbs.x + grid / 2 > canvas.width - wallSize) {
+        curOrbs.x = canvas.width - wallSize - grid / 2;
+        curOrbs.dx *= -1;
+    }
+
+    // check to see if orb collides with the top wall
+    if (curOrbs.y - grid / 2 < wallSize) {
+        // make the closest inactive orb active
+        const closestOrbs = getClosestOrbs(curOrbs);
+        handleCollision(closestOrbs);
+    }
+
+    // check to see if orb collides with another orb
+    for (let i = 0; i < orbs.length; i++) {
+        const orb = orbs[i];
+
+        if (orb.active && collides(curOrbs, orb)) {
+            const closestOrbs = getClosestOrbs(curOrbs);
+            if (!closestOrbs) {
+                window.alert("Game Over");
+                window.location.reload();
+            }
+
+            if (closestOrbs) {
+                handleCollision(closestOrbs);
+            }
+        }
+    }
+
+    // move orb particles
+    particles.forEach((particle) => {
+        particle.y += 8;
+    });
+
+    // remove particles that went off the screen
+    particles = particles.filter(
+        (particles) => particles.y < canvas.height - grid / 2
+    );
+
+    // draw walls
+    context.fillStyle = "#b5eaffff";
+    context.fillRect(0, 0, canvas.width, wallSize);
+    context.fillRect(0, 0, wallSize, canvas.height);
+    context.fillRect(canvas.width - wallSize, 0, wallSize, canvas.height);
+
+    // draw grid orbs as plain orbs
+    orbs.forEach((b) => {
+        if (!b.active) return;
+        drawOrbGlowing(context, b.x, b.y, b.radius, b.color);
+    });
+
+    // draw particles cheaply (or use drawOrbPlain for more polish)
+    particles.forEach((p) => {
+        drawOrbGlowing(context, p.x, p.y, p.radius, p.color);
+    });
+
+    // draw fire arrow. since we're rotating the canvas we need to save
+    // the state and restore it when we're done
+    context.save();
+    context.translate(CANNON_WORLD_X, CANNON_WORLD_Y);
+    context.rotate(shootDeg);
+
+    // draw cannon under the arrow
+    context.drawImage(
+        cannonImg,
+        0,
+        0,
+        CANNON_WIDTH,
+        CANNON_HEIGHT,
+        -CANNON_PIVOT_X,
+        -CANNON_PIVOT_Y,
+        CANNON_WIDTH,
+        CANNON_HEIGHT
+    );
+    context.translate(0, (-grid / 2) * 4.5);
+
+    // draw arrow ↑
+    context.strokeStyle = "white";
+    context.lineWidth = 2;
+    context.beginPath();
+    context.moveTo(0, 0);
+    context.lineTo(0, grid * 2);
+    context.moveTo(0, 0);
+    context.lineTo(-10, grid * 0.4);
+    context.moveTo(0, 0);
+    context.lineTo(10, grid * 0.4);
+    context.stroke();
+
+    context.restore();
+
+    // draw current orb
+    const previewOffset = grid * 0.2;
+    const previewX = CANNON_WORLD_X + Math.sin(shootDeg) * previewOffset;
+    const previewY = CANNON_WORLD_Y - Math.cos(shootDeg) * previewOffset;
+
+    if ((curOrbs.dx || 0) === 0 && (curOrbs.dy || 0) === 0) {
+        drawOrbGlowing(
+            context,
+            previewX,
+            previewY,
+            curOrbs.radius,
+            curOrbs.color
+        );
+    } else {
+        drawOrbGlowing(
+            context,
+            curOrbs.x,
+            curOrbs.y,
+            curOrbs.radius,
+            curOrbs.color
+        );
+    }
+}
+
+// listen for keyboard events to move the fire arrow
+document.addEventListener("keydown", (e) => {
+    if (e.code === "ArrowLeft") {
+        shootDir = -1;
+    } else if (e.code === "ArrowRight") {
+        shootDir = 1;
+    }
+
+    // if the current orb is not moving we can launch it
+    if (e.code === "Space" && curOrbs.dx === 0 && curOrbs.dy === 0) {
+        // convert an angle to x/y
+        curOrbs.dx = Math.sin(shootDeg) * curOrbs.speed;
+        curOrbs.dy = -Math.cos(shootDeg) * curOrbs.speed;
+
+        shootSound.currentTime = 0; // rewind to start
+        shootSound.play();
+    }
+});
+
+// listen for keyboard events to stop moving the fire arrow if key is
+// released
+document.addEventListener("keyup", (e) => {
+    if (
+        // only reset shoot dir if the released key is also the current
+        // direction of movement. otherwise if you press down both arrow
+        // keys at the same time and then release one of them, the arrow
+        // stops moving even though you are still pressing a key
+        (e.code === "ArrowLeft" && shootDir === -1) ||
+        (e.code === "ArrowRight" && shootDir === 1)
+    ) {
+        shootDir = 0;
+    }
+});
+
+// start the game
+requestAnimationFrame(loop);

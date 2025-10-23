@@ -1,9 +1,9 @@
 const canvas = document.getElementById("game");
 const context = canvas.getContext("2d");
-
+// 1. Size of each grid cell
 const grid = 32;
 
-//colour map
+// 2. Define colorMap FIRST
 const colorMap = {
     R: "#ff007f",
     G: "#33ff33",
@@ -11,11 +11,11 @@ const colorMap = {
     Y: "#fff44f",
 };
 
-// Extract color keys and values
-const colorKeys = Object.keys(colorMap);
-const colors = Object.values(colorMap);
+// 3. Then define colorKeys and colors
+const colorKeys = Object.keys(colorMap); // ["R", "G", "B", "Y"]
+const colors = Object.values(colorMap); // ["#ff007f", "#33ff33", "#3399ff", "#fff44f"]
 
-// Function to draw a glowing orb
+// simple orb renderer: clear radial core, stronger rim, specular highlight
 function drawOrbGlowing(ctx, x, y, r, color, glowAlpha = 0.6) {
     // Outer glow
     const glow = ctx.createRadialGradient(x, y, r * 0.6, x, y, r * 1.8);
@@ -30,7 +30,7 @@ function drawOrbGlowing(ctx, x, y, r, color, glowAlpha = 0.6) {
     ctx.fill();
     ctx.restore();
 
-    // Orb body
+    // Core orb (same as drawOrbPlain)
     const g = ctx.createRadialGradient(
         x - r * 0.22,
         y - r * 0.28,
@@ -66,7 +66,7 @@ function drawOrbGlowing(ctx, x, y, r, color, glowAlpha = 0.6) {
     ctx.fill();
 }
 
-// Function to generate a random grid of orbs
+// 4. Function to generate a random grid layout
 function generateRandomGrid(rows, cols, activeRows = 5) {
     const grid = [];
     for (let row = 0; row < rows; row++) {
@@ -88,11 +88,9 @@ function generateRandomGrid(rows, cols, activeRows = 5) {
     return grid;
 }
 
-// Game state variables
 let score = 0;
 let level = 1;
 
-// score and level display update functions
 function updateScoreDisplay() {
     const scoreElement = document.getElementById("scoreDisplay");
     if (scoreElement) {
@@ -111,7 +109,6 @@ function nextLevel() {
     getNewOrbs();
 }
 
-// Function to rebuild orbs from the level grid
 function rebuildorbsFromGrid() {
     orbs.length = 0; // clear existing orb objects
     particles.length = 0; // clear particles to avoid leftover visuals
@@ -134,21 +131,27 @@ function rebuildorbsFromGrid() {
     }
 }
 
-// Initialize level grid
+// 5. Create your grid
 let levelGrid = generateRandomGrid(10, 8, 5); // 10 rows, 8 columns,top 5 filled
-const orbGap = 1; // gap between orbs
+
+// use a 1px gap between each orb
+const bubbleGap = 1;
+
+// the size of the outer walls for the game
 const wallSize = 4;
+const orbs = [];
 let particles = [];
 
-// Utility function to convert degrees to radians
+// helper function to convert deg to radians
 function degToRad(deg) {
     return (deg * Math.PI) / 180;
 }
 
-// Utility function to rotate a point around the origin
+// rotate a point by an angle
 function rotatePoint(x, y, angle) {
     let sin = Math.sin(angle);
     let cos = Math.cos(angle);
+
     return {
         x: x * cos - y * sin,
         y: x * sin + y * cos,
@@ -170,12 +173,12 @@ function getDistance(obj1, obj2) {
     return Math.sqrt(distX * distX + distY * distY);
 }
 
-//check between two orbs if they are colliding
+// check for collision between two circles
 function collides(obj1, obj2) {
     return getDistance(obj1, obj2) < obj1.radius + obj2.radius;
 }
 
-// get the closest orb to an object that is in a specific active state
+// find the closest orbs that collide with the object
 function getClosestOrbs(obj, activeState = false) {
     const closestorbs = orbs.filter(
         (orb) => orb.active == activeState && collides(obj, orb)
@@ -197,6 +200,9 @@ function getClosestOrbs(obj, activeState = false) {
             .sort((a, b) => a.distance - b.distance)[0].orb
     );
 }
+
+// create the orb grid orb. passing a color will create
+// an active orb
 function createOrbs(x, y, color) {
     const row = Math.floor(y / grid);
     const col = Math.floor(x / grid);
@@ -222,7 +228,7 @@ function createOrbs(x, y, color) {
     });
 }
 
-// get neighboring orbs in the 6 possible directions
+// get all orbs that touch the passed in orb
 function getNeighbors(orb) {
     const neighbors = [];
 
@@ -260,7 +266,7 @@ function getNeighbors(orb) {
     return neighbors;
 }
 
-// remove matching orbs recursively
+// remove orbs that create a match of 3 colors
 function removeMatch(targetOrbs) {
     const matches = [targetOrbs];
 
@@ -407,6 +413,7 @@ const maxDeg = degToRad(60);
 
 // the direction of movement for the arrow (-1 = left, 1 = right)
 let shootDir = 0;
+
 // reset the orb to shoot to the bottom of the screen
 function getNewOrbs() {
     curOrbs.x = curOrbsPos.x;

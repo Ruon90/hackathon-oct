@@ -2,7 +2,7 @@ html,
 body {
     height: 100%;
     margin: 0;
-    background-image: url("../images/Synthwave_background.png");
+    background-image: url("/assets/al/images/Synthwave_background.png");
     background-size: cover;
 }
 
@@ -27,7 +27,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-image: url("../images/blastingBg.jpg");
+    background-image: url("/assets/al/images/blastingBg.jpg");
     opacity: 0.9;
     background-size: cover;
     background-position: center;

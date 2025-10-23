@@ -123,6 +123,51 @@ footer {
     max-width: 90%;
     animation: pulseGlow 2s infinite alternate;
 }
+
+.instruction-wrapper .row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.instruction-box {
+    flex: 1;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #0ff;
+    border-radius: 10px;
+    color: #0ff;
+    font-family: "Orbitron", sans-serif;
+    box-shadow: 0 0 10px #0ff;
+    transition: transform 0.3s ease;
+}
+
+.instruction-box:hover {
+    transform: scale(1.02);
+}
+
+.glow-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
+}
+
+.glow-text {
+    font-size: 1rem;
+    line-height: 1.5;
+    text-shadow: 0 0 5px #0ff;
+}
+
+@media (max-width: 768px) {
+    .instruction-box {
+        text-align: center;
+        min-height: auto;
+    }
+}
+
 #playAgainBtn {
     margin-top: 20px;
     padding: 10px 20px;

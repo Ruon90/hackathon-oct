@@ -34,10 +34,10 @@ const frog = {
 
 const cars = [];
 const frogImg = new Image();
-frogImg.src = "/assets/froggy/frog.png";
+frogImg.src = "assets/froggy/frog.png";
 
 const carImg = new Image();
-carImg.src = "/assets/froggy/car.png";
+carImg.src = "assets/froggy/car.png";
 
 function generateCars(level) {
     cars.length = 0;
@@ -208,10 +208,10 @@ function gameLoop() {
     draw();
     gameLoopId = requestAnimationFrame(gameLoop);
 }
-const hopSound = new Audio("/assets/froggy/hop.wav");
-const trafficSound = new Audio("/assets/froggy/traffic.wav");
-const winSound = new Audio("/assets/froggy/win.wav");
-const levelUpSound = new Audio("/assets/froggy/levelup.wav");
+const hopSound = new Audio("assets/froggy/hop.wav");
+const trafficSound = new Audio("assets/froggy/traffic.wav");
+const winSound = new Audio("assets/froggy/win.wav");
+const levelUpSound = new Audio("assets/froggy/levelup.wav");
 trafficSound.loop = true;
 
 trafficSound.volume = 0.5;

@@ -110,3 +110,47 @@ function nextLevel() {
     rebuildorbsFromGrid();
     getNewOrbs();
 }
+
+// Function to rebuild orbs from the level grid
+function rebuildorbsFromGrid() {
+    orbs.length = 0; // clear existing orb objects
+    particles.length = 0; // clear particles to avoid leftover visuals
+
+    const rows = levelGrid.length;
+    for (let row = 0; row < rows; row++) {
+        const maxCols = row % 2 === 0 ? 8 : 7;
+        for (let col = 0; col < maxCols; col++) {
+            const code = levelGrid[row]?.[col]; // "R","G","B","Y" or null
+            const color = code ? colorMap[code] : null;
+            createOrbs(col * grid, row * grid, color);
+
+            // ensure the last pushed orb has correct row/col
+            const b = orbs[orbs.length - 1];
+            if (b) {
+                b.row = row;
+                b.col = col;
+            }
+        }
+    }
+}
+
+// Initialize level grid
+let levelGrid = generateRandomGrid(10, 8, 5); // 10 rows, 8 columns,top 5 filled
+const orbGap = 1; // gap between orbs
+const wallSize = 4;
+let particles = [];
+
+// Utility function to convert degrees to radians
+function degToRad(deg) {
+    return (deg * Math.PI) / 180;
+}
+
+// Utility function to rotate a point around the origin
+function rotatePoint(x, y, angle) {
+    let sin = Math.sin(angle);
+    let cos = Math.cos(angle);
+    return {
+        x: x * cos - y * sin,
+        y: x * sin + y * cos,
+    };
+}

@@ -154,3 +154,154 @@ function rotatePoint(x, y, angle) {
         y: x * sin + y * cos,
     };
 }
+
+// get a random integer between the range of [min,max]
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// get the distance between two points
+function getDistance(obj1, obj2) {
+    const distX = obj1.x - obj2.x;
+    const distY = obj1.y - obj2.y;
+    return Math.sqrt(distX * distX + distY * distY);
+}
+
+//check between two orbs if they are colliding
+function collides(obj1, obj2) {
+    return getDistance(obj1, obj2) < obj1.radius + obj2.radius;
+}
+
+// get the closest orb to an object that is in a specific active state
+function getClosestOrbs(obj, activeState = false) {
+    const closestorbs = orbs.filter(
+        (orb) => orb.active == activeState && collides(obj, orb)
+    );
+
+    if (!closestorbs.length) {
+        return;
+    }
+
+    return (
+        closestorbs
+            // turn the array of orbs into an array of distances
+            .map((orb) => {
+                return {
+                    distance: getDistance(obj, orb),
+                    orb,
+                };
+            })
+            .sort((a, b) => a.distance - b.distance)[0].orb
+    );
+}
+function createOrbs(x, y, color) {
+    const row = Math.floor(y / grid);
+    const col = Math.floor(x / grid);
+
+    // orbs on odd rows need to start half-way on the grid
+    const startX = row % 2 === 0 ? 0 : 0.5 * grid;
+
+    // because we are drawing circles we need the x/y position
+    // to be the center of the circle instead of the top-left
+    // corner like you would for a square
+    const center = grid / 2;
+
+    orbs.push({
+        x: wallSize + (grid + bubbleGap) * col + startX + center,
+
+        // the orbs are closer on the y axis so we subtract 4 on every
+        // row
+        y: wallSize + (grid + bubbleGap - 4) * row + center,
+
+        radius: grid / 2,
+        color: color,
+        active: color ? true : false,
+    });
+}
+
+// get neighboring orbs in the 6 possible directions
+function getNeighbors(orb) {
+    const neighbors = [];
+
+    // check each of the 6 directions by "moving" the orb by a full
+    // grid in each of the 6 directions (60 degree intervals)
+    const dirs = [
+        // right
+        rotatePoint(grid, 0, 0),
+        // up-right
+        rotatePoint(grid, 0, degToRad(60)),
+        // up-left
+        rotatePoint(grid, 0, degToRad(120)),
+        // left
+        rotatePoint(grid, 0, degToRad(180)),
+        // down-left
+        rotatePoint(grid, 0, degToRad(240)),
+        // down-right
+        rotatePoint(grid, 0, degToRad(300)),
+    ];
+
+    for (let i = 0; i < dirs.length; i++) {
+        const dir = dirs[i];
+
+        const newOrbs = {
+            x: orb.x + dir.x,
+            y: orb.y + dir.y,
+            radius: orb.radius,
+        };
+        const neighbor = getClosestOrbs(newOrbs, true);
+        if (neighbor && neighbor !== orb && !neighbors.includes(neighbor)) {
+            neighbors.push(neighbor);
+        }
+    }
+
+    return neighbors;
+}
+
+// remove matching orbs recursively
+function removeMatch(targetOrbs) {
+    const matches = [targetOrbs];
+
+    orbs.forEach((orb) => (orb.processed = false));
+    targetOrbs.processed = true;
+
+    // loop over the neighbors of matching colors for more matches
+    let neighbors = getNeighbors(targetOrbs);
+    for (let i = 0; i < neighbors.length; i++) {
+        let neighbor = neighbors[i];
+
+        if (!neighbor.processed) {
+            neighbor.processed = true;
+
+            if (neighbor.color === targetOrbs.color) {
+                matches.push(neighbor);
+                neighbors = neighbors.concat(getNeighbors(neighbor));
+            }
+        }
+    }
+
+    if (matches.length >= 3) {
+        popSound.currentTime = 0; // rewind to start
+        popSound.play();
+
+        matches.forEach((orb) => {
+            orb.active = false;
+
+            //  Clear the grid cell
+            const row = orb.row;
+            const col = orb.col;
+            if (levelGrid[row]) {
+                levelGrid[row][col] = null;
+            }
+
+            // Add score
+            score += 1;
+        });
+
+        updateScoreDisplay();
+
+        return true;
+    }
+}

@@ -65,6 +65,8 @@ export default class GameScene extends Phaser.Scene {
         const background = this.add.image(800, 600, "background");
 
         this.player = this.physics.add.sprite(800, 621, "player");
+        this.playerLives = 5;
+        this.isInvulnerable = false;
         this.lastFired = 0;
         this.fireRate = 360; // milliseconds between shots
         this.player.canMove = true;
@@ -321,6 +323,10 @@ export default class GameScene extends Phaser.Scene {
             fontSize: "20px",
             fill: "#fff",
         });
+        this.livesText = this.add.text(10, 30, "Lives: 5", {
+            fontSize: "20px",
+            fill: "#fff",
+        });
         // spawnEnemy will add the enemy to the enemies group and set up colliders
         this.spawnPoints = [
             { x: 528, y: 888 },
@@ -340,8 +346,8 @@ export default class GameScene extends Phaser.Scene {
         this.maxEnemiesHardCap = 50; // never allow more than this
         this.maxEnemies = this.baseMaxEnemies;
         this.spawnedEnemies = 0;
-
         this.scoreText.setScrollFactor(0);
+        this.livesText.setScrollFactor(0);
         this.score = 0;
         this.time.addEvent({
             delay: 2000 - this.score * 20, // decrease delay as score increases
@@ -508,6 +514,9 @@ export default class GameScene extends Phaser.Scene {
             } else if (enemy && typeof enemy.setFrame === "function") {
                 enemy.setFrame(0);
             }
+            if (this.playerLives <= 0) {
+                this.scene.start("DeathScene", { score: this.score });
+            }
         });
 
         // dynamic cap (update once per frame; cheap)
@@ -515,6 +524,83 @@ export default class GameScene extends Phaser.Scene {
             this.baseMaxEnemies + Math.floor(this.score / 3),
             this.maxEnemiesHardCap
         );
+        // take damage
+        this.physics.add.overlap(this.player, this.enemies, (player, enemy) => {
+            if (this.isInvulnerable) return;
+
+            // Reduce health
+            this.playerLives--;
+            this.livesText.setText("Lives: " + this.playerLives);
+            // Knockback both entities
+            const dx = player.x - enemy.x;
+            const dy = player.y - enemy.y;
+            const angle = Math.atan2(dy, dx);
+            const knockback = 100;
+
+            player.x += Math.cos(angle) * knockback;
+            player.y += Math.sin(angle) * knockback;
+            enemy.x -= Math.cos(angle) * knockback;
+            enemy.y -= Math.sin(angle) * knockback;
+
+            // Trigger screen shake
+            this.cameras.main.shake(100, 0.01);
+
+            // Full-screen camera flash (covers viewport and respects camera)
+            this.cameras.main.flash(500, 0, 0, 0);
+
+            // Start invulnerability and synchronized flashing
+            this.isInvulnerable = true;
+
+            // total invulnerability duration (ms) - tune as desired
+            const invulDuration = 2000;
+            const flashHalf = 150; // ms for half-cycle of flash (on or off)
+
+            // clear any existing invulnerability tween/timer
+            if (this.invulTween) {
+                try {
+                    this.invulTween.remove();
+                } catch (e) {}
+                this.invulTween = null;
+            }
+            if (this.invulTimer) {
+                try {
+                    this.invulTimer.remove();
+                } catch (e) {}
+                this.invulTimer = null;
+            }
+
+            // compute repeats so the total flash time ~= invulDuration
+            const cycleMs = flashHalf * 2;
+            const cycles = Math.max(1, Math.floor(invulDuration / cycleMs));
+            const repeat = Math.max(0, cycles - 1);
+
+            // start flashing tween that will yoyo between 0.3 and 1
+            this.invulTween = this.tweens.add({
+                targets: player,
+                alpha: { from: 0.3, to: 1 },
+                duration: flashHalf,
+                yoyo: true,
+                repeat: repeat,
+                onComplete: () => {
+                    if (player && player.active) player.setAlpha(1);
+                    this.isInvulnerable = false;
+                    this.invulTween = null;
+                },
+            });
+
+            // backup timer to ensure invulnerability ends exactly at invulDuration
+            this.invulTimer = this.time.delayedCall(invulDuration, () => {
+                if (this.invulTween) {
+                    try {
+                        this.invulTween.remove();
+                    } catch (e) {}
+                    this.invulTween = null;
+                }
+                this.isInvulnerable = false;
+                if (player && player.active) player.setAlpha(1);
+                this.invulTimer = null;
+            });
+        });
     }
 
     fireBullet() {

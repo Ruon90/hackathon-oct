@@ -50,6 +50,14 @@ export default class GameScene extends Phaser.Scene {
                 frameHeight: 240, // adjust to your sprite frame height
             }
         );
+        this.load.spritesheet(
+            "bullet_animated",
+            "assets/tower/images/bullet.png",
+            {
+                frameWidth: 256, // adjust to your sprite frame width
+                frameHeight: 516, // adjust to your sprite frame height
+            }
+        );
         this.load.audio("gameMusic", "assets/tower/audio/game_music.mp3");
         this.load.audio("gunshot", "assets/tower/audio/gunshot.mp3");
         this.load.audio("enemyDestroy", "assets/tower/audio/enemy_destroy.mp3");
@@ -379,6 +387,15 @@ export default class GameScene extends Phaser.Scene {
             repeat: 0,
         });
         this.anims.create({
+            key: "shoot_bullet",
+            frames: this.anims.generateFrameNumbers("bullet_animated", {
+                start: 0,
+                end: 3,
+            }),
+            frameRate: 11,
+            repeat: -1,
+        });
+        this.anims.create({
             key: "wall_impact",
             frames: this.anims.generateFrameNumbers("wall_impact", {
                 start: 0,
@@ -607,10 +624,11 @@ export default class GameScene extends Phaser.Scene {
         const bullet = this.bullets.create(
             this.player.x,
             this.player.y,
-            "bullet"
+            "bullet_animated"
         );
+        bullet.play("shoot_bullet");
         this.physics.world.enable(bullet);
-        bullet.setScale(0.2);
+        bullet.setScale(0.1);
         bullet.setOrigin(0.5, 0.5); // X = center, Y = lower down
         bullet.setDepth(1);
         const angle = Phaser.Math.Angle.Between(
@@ -621,7 +639,7 @@ export default class GameScene extends Phaser.Scene {
         );
         this.physics.velocityFromRotation(angle, 700, bullet.body.velocity);
 
-        bullet.setRotation(angle); // Optional: rotate bullet to face direction
+        bullet.setRotation(angle + Phaser.Math.DegToRad(90)); // adjust because sprite faces up
         bullet.body.angle = angle;
         this.player.anims.play("shoot", true);
         this.player.setVelocity(0); // Stop player movement while shooting
@@ -647,8 +665,8 @@ export default class GameScene extends Phaser.Scene {
         enemy.setScale(0.2);
         // Initial state: use EnemyAi.freezeAndFlash to freeze & flash for 700ms
         enemy.isSpawning = true;
-        enemy.freezeAndFlash(700);
-        this.time.delayedCall(700, () => {
+        enemy.freezeAndFlash(1200);
+        this.time.delayedCall(1200, () => {
             if (enemy && enemy.active) enemy.isSpawning = false;
         });
         // Update counters
@@ -659,6 +677,14 @@ export default class GameScene extends Phaser.Scene {
     }
 
     hitEnemy(bullet, enemy) {
+        // If the enemy is spawn-protected (frozen) ignore destroying it, but remove the bullet
+        if (enemy && (enemy.isSpawning || enemy.frozen)) {
+            try {
+                bullet.destroy();
+            } catch (e) {}
+            return;
+        }
+
         // Create impact sprite at enemy position
         const impact = this.add.sprite(enemy.x, enemy.y, "enemy_impact");
         impact.setScale(0.4);

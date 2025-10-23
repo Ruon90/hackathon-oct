@@ -57,6 +57,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     create() {
+        this.input.setDefaultCursor("crosshair");
         // world bounds
         this.physics.world.setBounds(0, 0, 1600, 1200);
 
@@ -65,7 +66,7 @@ export default class GameScene extends Phaser.Scene {
 
         this.player = this.physics.add.sprite(800, 621, "player");
         this.lastFired = 0;
-        this.fireRate = 1500; // milliseconds between shots
+        this.fireRate = 360; // milliseconds between shots
         this.player.canMove = true;
         this.player.setDepth(2);
         this.keys = this.input.keyboard.addKeys({
@@ -320,9 +321,30 @@ export default class GameScene extends Phaser.Scene {
             fontSize: "20px",
             fill: "#fff",
         });
+        // spawnEnemy will add the enemy to the enemies group and set up colliders
+        this.spawnPoints = [
+            { x: 528, y: 888 },
+            { x: 472, y: 297 },
+            { x: 1030, y: 879 },
+            { x: 956, y: 289 },
+            { x: 1494, y: 1114 },
+            { x: 136, y: 1074 },
+            { x: 141, y: 56 },
+            { x: 829, y: 72 },
+            { x: 1347, y: 107 },
+            { x: 1433, y: 864 },
+        ];
+
+        this.spawnIndex = 0;
+        this.baseMaxEnemies = 5; // starting cap
+        this.maxEnemiesHardCap = 50; // never allow more than this
+        this.maxEnemies = this.baseMaxEnemies;
+        this.spawnedEnemies = 0;
+
         this.scoreText.setScrollFactor(0);
+        this.score = 0;
         this.time.addEvent({
-            delay: 2000,
+            delay: 2000 - this.score * 20, // decrease delay as score increases
             callback: this.spawnEnemy,
             callbackScope: this,
             loop: true,
@@ -388,12 +410,16 @@ export default class GameScene extends Phaser.Scene {
                     // Stop player movement while shooting
                     this.player.canMove = false;
 
-                    this.time.delayedCall(500, () => {
+                    this.time.delayedCall(this.fireRate, () => {
                         this.player.canMove = true;
                     });
                 }
             }
         });
+        // remove or comment out this block:
+        // if (this.score >= this.maxEnemies) {
+        //     this.maxEnemies += 5;
+        // }
         // walk animaiton
         this.anims.create({
             key: "walk",
@@ -411,28 +437,10 @@ export default class GameScene extends Phaser.Scene {
         });
         this.gameMusic.play();
 
-        // Enemy AI & collisions - create an initial enemy via spawnEnemy()
-        // spawnEnemy will add the enemy to the enemies group and set up colliders
-        this.spawnPoints = [
-            { x: 528, y: 888 },
-            { x: 472, y: 297 },
-            { x: 1030, y: 879 },
-            { x: 956, y: 289 },
-            { x: 1494, y: 1114 },
-            { x: 136, y: 1074 },
-            { x: 141, y: 56 },
-            { x: 829, y: 72 },
-            { x: 1347, y: 107 },
-            { x: 1433, y: 864 },
-        ];
-
-        this.spawnIndex = 0;
-        this.maxEnemies = 4;
-        this.spawnedEnemies = 0;
+        this._lastScoreForCap = -1;
     }
 
     update() {
-        this.input.setDefaultCursor("crosshair");
         const isShooting =
             this.player.anims &&
             this.player.anims.currentAnim &&
@@ -465,7 +473,8 @@ export default class GameScene extends Phaser.Scene {
             pointer.worldY
         );
         this.player.setRotation(angle + Phaser.Math.DegToRad(-90));
-        console.log(`Player X: ${this.player.x}, Y: ${this.player.y}`);
+        // x - y mapping console log
+        // console.log(`Player X: ${this.player.x}, Y: ${this.player.y}`);
         const moving =
             this.keys.left.isDown ||
             this.keys.right.isDown ||
@@ -500,6 +509,12 @@ export default class GameScene extends Phaser.Scene {
                 enemy.setFrame(0);
             }
         });
+
+        // dynamic cap (update once per frame; cheap)
+        this.maxEnemies = Math.min(
+            this.baseMaxEnemies + Math.floor(this.score / 3),
+            this.maxEnemiesHardCap
+        );
     }
 
     fireBullet() {
@@ -544,7 +559,12 @@ export default class GameScene extends Phaser.Scene {
         this.physics.add.collider(enemy, this.player);
         this.physics.add.collider(enemy, this.walls);
         enemy.setScale(0.2);
-
+        // Initial state: use EnemyAi.freezeAndFlash to freeze & flash for 700ms
+        enemy.isSpawning = true;
+        enemy.freezeAndFlash(700);
+        this.time.delayedCall(700, () => {
+            if (enemy && enemy.active) enemy.isSpawning = false;
+        });
         // Update counters
         this.spawnedEnemies++;
         this.spawnIndex = (this.spawnIndex + 1) % this.spawnPoints.length;
@@ -562,9 +582,8 @@ export default class GameScene extends Phaser.Scene {
         bullet.destroy();
         const eDestroy = this.sound.add("enemyDestroy", { volume: 0.85 });
         eDestroy.play();
-
-        enemy.destroy();
         this.spawnedEnemies--;
+        enemy.destroy();
         this.score += 1;
         this.scoreText.setText("Score: " + this.score);
     }

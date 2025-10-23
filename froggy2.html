@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Arcade Legends</title>
+    <link rel="icon" href="assets/images/favicon-arcade.png" type="image/png">
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style2.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Arcade Legends</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index2.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tower.html">Tower Defense Game</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="orb-blasting2.html">Orb Blasting Game</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="froggy2.html">Froggy Game</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <video id="bg-video" autoplay muted loop playsinline>
+        <source src="assets/images/animated-bg.webm" type="video/webm">
+        <!-- Fallback text -->
+        Your browser does not support the background video.
+    </video>
+    <h1 id="froggerheader">🐸 Froggy</h1>
+
+    <div class="game-wrapper">
+        <div id="startOverlay" class="overlay flicker">Press Enter to Start</div>
+        <canvas id="gameCanvas" width="400" height="500"></canvas>
+        <div id="pauseOverlay" class="overlay flicker" style="display: none;">Paused<br>Press Enter or Space to Resume
+        </div>
+    </div>
+    <a href="index2.html" id="mainMenuBtn">Return Main Menu</a>
+    <div class="instruction-wrapper container-fluid mb-4">
+        <div class="row">
+
+            <div class="mobile-controls">
+                <button class="control-btn" id="btn-up">⬆️</button>
+                <div class="horizontal-controls">
+                    <button class="control-btn" id="btn-left">⬅️</button>
+                    <button class="control-btn" id="btn-down">⬇️</button>
+                    <button class="control-btn" id="btn-right">➡️</button>
+                </div>
+                <button class="control-btn" id="btn-pause">⏸️</button>
+            </div>
+
+            <!-- Left Box -->
+            <div class="col-md-6 mb-3 mb-md-0">
+                <div class="instruction-box">
+                    <h3 class="glow-title">🟢 Objective</h3>
+                    <p class="glow-text">Help Froggy cross the road and avoid the oncoming traffic.</p>
+                </div>
+            </div>
+
+            <!-- Right Box -->
+            <div class="col-md-6">
+                <div class="instruction-box text-md-end">
+                    <h3 class="glow-title">🎮 Controls</h3>
+                    <p class="glow-text">⬆️⬇️⬅️➡️ Arrow Keys to move<br>⏸️ Spacebar to pause</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="winOverlay" class="overlay flicker" style="display: none;">
+        You Win! 🎉<br><br>
+        <button id="playAgainBtn">Play Again</button>
+    </div>
+
+    <script src="assets/froggy/game.js"></script>
+
+
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <div class="container">
+            <p class="mb-0"> 2025 Arcade Legends. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
+</body>
+
+</html>

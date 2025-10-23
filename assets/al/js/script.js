@@ -87,3 +87,26 @@ function generateRandomGrid(rows, cols, activeRows = 5) {
     }
     return grid;
 }
+
+// Game state variables
+let score = 0;
+let level = 1;
+
+// score and level display update functions
+function updateScoreDisplay() {
+    const scoreElement = document.getElementById("scoreDisplay");
+    if (scoreElement) {
+        scoreElement.textContent = score;
+    }
+}
+function updateLevelDisplay() {
+    const el = document.getElementById("levelDisplay");
+    if (el) el.textContent = level;
+}
+function nextLevel() {
+    level++;
+    levelGrid = generateRandomGrid(10, 8, 5); // or adjust rows/cols/activeRows as desired
+    updateLevelDisplay();
+    rebuildorbsFromGrid();
+    getNewOrbs();
+}

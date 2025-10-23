@@ -17,6 +17,7 @@ export default class EnemyAi extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(time) {
+        this.isMoving = false;
         const dist = Phaser.Math.Distance.Between(
             this.x,
             this.y,
@@ -45,6 +46,10 @@ export default class EnemyAi extends Phaser.Physics.Arcade.Sprite {
                 this.attack();
                 break;
         }
+        // Check velocity to determine movement
+        const vx = this.body.velocity.x;
+        const vy = this.body.velocity.y;
+        this.isMoving = !(vx === 0 && vy === 0);
     }
 
     patrol(time) {

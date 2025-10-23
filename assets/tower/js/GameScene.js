@@ -15,7 +15,7 @@ export default class GameScene extends Phaser.Scene {
             }
         );
         this.load.image("bullet", "assets/tower/images/bullet_static.png");
-        this.load.image("enemy", "assets/tower/images/enemy_static.png");
+        // this.load.image("enemy", "assets/tower/images/enemy_static.png");
         this.load.image("background", "assets/tower/images/level.jpg");
         this.load.spritesheet(
             "playerWalk",
@@ -26,6 +26,14 @@ export default class GameScene extends Phaser.Scene {
             }
         );
 
+        this.load.spritesheet(
+            "enemy_walk",
+            "assets/tower/images/enemy_walk.png",
+            {
+                frameWidth: 403, // adjust to your sprite frame width
+                frameHeight: 379, // adjust to your sprite frame height
+            }
+        );
         this.load.spritesheet(
             "wall_impact",
             "assets/tower/images/wall_impact.png",
@@ -360,7 +368,15 @@ export default class GameScene extends Phaser.Scene {
             frameRate: 9,
             repeat: 0,
         });
-
+        this.anims.create({
+            key: "enemy_walk",
+            frames: this.anims.generateFrameNumbers("enemy_walk", {
+                start: 0,
+                end: 7,
+            }),
+            frameRate: 4,
+            repeat: -1,
+        });
         this.input.on("pointerdown", () => {
             const now = this.time.now;
 
@@ -385,7 +401,7 @@ export default class GameScene extends Phaser.Scene {
                 start: 0,
                 end: 5,
             }),
-            frameRate: 10,
+            frameRate: 9,
             repeat: -1,
         });
 
@@ -395,9 +411,9 @@ export default class GameScene extends Phaser.Scene {
         });
         this.gameMusic.play();
 
-        // Enemy AI
-        this.enemy = new EnemyAi(this, 400, 300, "enemySprite", this.player);
-        this.physics.add.collider(this.enemy, this.player);
+        // Enemy AI & collisions - create an initial enemy via spawnEnemy()
+        // spawnEnemy will add the enemy to the enemies group and set up colliders
+        this.spawnEnemy();
     }
 
     update() {
@@ -433,7 +449,7 @@ export default class GameScene extends Phaser.Scene {
             pointer.worldY
         );
         this.player.setRotation(angle + Phaser.Math.DegToRad(-90));
-        console.log(this.player.position);
+        console.log(`Player X: ${this.player.x}, Y: ${this.player.y}`);
         const moving =
             this.keys.left.isDown ||
             this.keys.right.isDown ||
@@ -448,10 +464,25 @@ export default class GameScene extends Phaser.Scene {
                 this.player.setFrame(0); // reset to idle frame
             }
         }
-        // AI update
+        // Iterate enemies and update AI (safe if group is empty)
         const time = this.time.now;
         this.enemies.children.iterate((enemy) => {
-            if (enemy) enemy.update(time);
+            if (!enemy) return;
+
+            if (typeof enemy.update === "function") {
+                enemy.update(time);
+            }
+
+            if (enemy && enemy.isMoving) {
+                if (
+                    this.anims.exists("enemy_walk") &&
+                    typeof enemy.play === "function"
+                ) {
+                    enemy.play("enemy_walk", true);
+                }
+            } else if (enemy && typeof enemy.setFrame === "function") {
+                enemy.setFrame(0);
+            }
         });
     }
 
@@ -484,9 +515,12 @@ export default class GameScene extends Phaser.Scene {
     spawnEnemy() {
         const x = Phaser.Math.Between(50, 750);
         const y = Phaser.Math.Between(50, 550);
-        this.enemy = new EnemyAi(this, x, y, "enemy", this.player);
-        this.enemies.add(this.enemy);
-        this.enemy.setScale(0.5);
+        const enemy = new EnemyAi(this, x, y, "enemy_walk", this.player);
+        this.enemies.add(enemy);
+        this.physics.add.collider(enemy, this.player);
+        this.physics.add.collider(enemy, this.walls);
+        enemy.setScale(0.2);
+        return enemy;
     }
 
     hitEnemy(bullet, enemy) {

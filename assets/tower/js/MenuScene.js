@@ -12,6 +12,10 @@ export default class MenuScene extends Phaser.Scene {
             frameWidth: 512, // adjust to match actual frame width
             frameHeight: 512, // adjust to match actual frame height
         });
+        this.load.spritesheet("clouds2", "assets/tower/images/clouds2.png", {
+            frameWidth: 512, // adjust to match actual frame width
+            frameHeight: 512, // adjust to match actual frame height
+        });
         this.load.spritesheet(
             "lightning",
             "assets/tower/images/lightning.png",
@@ -48,6 +52,15 @@ export default class MenuScene extends Phaser.Scene {
             repeat: -1,
         });
         this.anims.create({
+            key: "cloudDrift2",
+            frames: this.anims.generateFrameNumbers("clouds2", {
+                start: 0,
+                end: 3,
+            }),
+            frameRate: 2,
+            repeat: -1,
+        });
+        this.anims.create({
             key: "rainFall",
             frames: this.anims.generateFrameNumbers("raindrop", {
                 start: 0,
@@ -76,13 +89,22 @@ export default class MenuScene extends Phaser.Scene {
         cloudLayer1.setDepth(2); // make sure it's above the background
         this.cloudLayer1 = this.add.sprite(-50, 200, "clouds").setScale(0.8);
         this.cloudLayer1.play("cloudDrift");
-        this.cloudLayer1.setDepth(2); // make sure it's above the background
+        this.cloudLayer1.setDepth(-1); // make sure it's above the background
         this.cloudLayer1 = this.add.sprite(700, 100, "clouds");
         this.cloudLayer1.play("cloudDrift");
         this.cloudLayer1.setDepth(2); // make sure it's above the background
         this.cloudLayer1 = this.add.sprite(400, 200, "clouds");
         this.cloudLayer1.play("cloudDrift");
         this.cloudLayer1.setDepth(2); // make sure it's above the background
+        const cloudLayer2 = this.add.sprite(0, 100, "clouds2");
+        this.cloudLayer2 = this.add.sprite(300, 100, "clouds2");
+        this.cloudLayer2.play("cloudDrift2");
+        this.cloudLayer2 = this.add.sprite(500, 100, "clouds2");
+        this.cloudLayer2.play("cloudDrift2");
+        this.cloudLayer2.setDepth(1); // make sure it's above the background
+        cloudLayer2.play("cloudDrift2");
+        cloudLayer2.setScrollFactor(0.5); // optional parallax effect
+        cloudLayer2.setDepth(1);
         // rain
 
         const playZone = this.add.rectangle(300, 810, 320, 100, 0x000000, 0); // invisible
@@ -139,9 +161,8 @@ export default class MenuScene extends Phaser.Scene {
             loop: true,
             volume: 0.7,
         });
-        this.input.once("pointerdown", () => {
-            this.menuMusic.play();
-            this.rainfall.play();
-        });
+        this.menuMusic.play();
+        this.rainfall.play();
+        this.input.once("pointerdown", () => {});
     }
 }

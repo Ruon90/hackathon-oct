@@ -1,3 +1,4 @@
+import EnemyAi from "./EnemyAi.js";
 export default class GameScene extends Phaser.Scene {
     constructor() {
         super("GameScene");
@@ -81,7 +82,7 @@ export default class GameScene extends Phaser.Scene {
             .setCollideWorldBounds(true)
             .setDrag(500, 500)
             .setScale(0.25);
-
+        this.input.setDefaultCursor("crosshair");
         this.bullets = this.physics.add.group({});
         this.enemies = this.physics.add.group();
         // wall collision
@@ -365,8 +366,8 @@ export default class GameScene extends Phaser.Scene {
 
             if (this.player) {
                 if (now - this.lastFired > this.fireRate) {
-                    this.player.anims.play("shoot", true);
                     this.fireBullet(); // your bullet firing function
+                    this.player.anims.play("shoot", true);
                     this.lastFired = now;
                     // Stop player movement while shooting
                     this.player.canMove = false;
@@ -393,6 +394,10 @@ export default class GameScene extends Phaser.Scene {
             volume: 0.6,
         });
         this.gameMusic.play();
+
+        // Enemy AI
+        this.enemy = new EnemyAi(this, 400, 300, "enemySprite", this.player);
+        this.physics.add.collider(this.enemy, this.player);
     }
 
     update() {
@@ -443,6 +448,11 @@ export default class GameScene extends Phaser.Scene {
                 this.player.setFrame(0); // reset to idle frame
             }
         }
+        // AI update
+        const time = this.time.now;
+        this.enemies.children.iterate((enemy) => {
+            if (enemy) enemy.update(time);
+        });
     }
 
     fireBullet() {
@@ -474,12 +484,9 @@ export default class GameScene extends Phaser.Scene {
     spawnEnemy() {
         const x = Phaser.Math.Between(50, 750);
         const y = Phaser.Math.Between(50, 550);
-        const enemy = this.enemies.create(x, y, "enemy");
-        enemy.setVelocity(
-            Phaser.Math.Between(-100, 100),
-            Phaser.Math.Between(-100, 100)
-        );
-        enemy.setScale(0.5);
+        this.enemy = new EnemyAi(this, x, y, "enemy", this.player);
+        this.enemies.add(this.enemy);
+        this.enemy.setScale(0.5);
     }
 
     hitEnemy(bullet, enemy) {

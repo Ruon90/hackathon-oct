@@ -1,7 +1,7 @@
 import MenuScene from "./MenuScene.js";
 import GameScene from "./GameScene.js";
 import DeathScene from "./DeathScene.js";
-
+import LoadingScene from "./LoadingScene.js";
 const config = {
     type: Phaser.AUTO,
     width: 600,

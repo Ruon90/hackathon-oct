@@ -76,9 +76,11 @@ export default class GameScene extends Phaser.Scene {
 
         this.player = this.physics.add.sprite(800, 621, "player");
         this.playerLives = 5;
-        this.isInvulnerable = false;
         this.lastFired = 0;
         this.fireRate = 360; // milliseconds between shots
+        this.isInvulnerable = false;
+        this.canShoot = true;
+        this._isTransitioning = false;
         this.player.canMove = true;
         this.player.setDepth(2);
         this.keys = this.input.keyboard.addKeys({

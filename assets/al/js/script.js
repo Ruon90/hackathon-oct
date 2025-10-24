@@ -318,6 +318,9 @@ shootSound.volume = 0.6; // optional: adjust volume (0.0 to 1.0)
 const popSound = new Audio("assets/al/sounds/pop.mp3");
 popSound.volume = 0.8; //
 
+const bounceSound = new Audio("assets/al/sounds/bounce.mp3");
+bounceSound.volume = 0.5; // optional: adjust volume (0.0 to 1.0)
+
 // make any floating orbs (orbs that don't have a orb chain
 // that touch the ceiling) drop down the screen
 function dropFloatingorbs() {
@@ -466,9 +469,13 @@ function loop() {
     if (curOrbs.x - grid / 2 < wallSize) {
         curOrbs.x = wallSize + grid / 2;
         curOrbs.dx *= -1;
+        bounceSound.currentTime = 0; // rewind to start
+        bounceSound.play();
     } else if (curOrbs.x + grid / 2 > canvas.width - wallSize) {
         curOrbs.x = canvas.width - wallSize - grid / 2;
         curOrbs.dx *= -1;
+        bounceSound.currentTime = 0; // rewind to start
+        bounceSound.play();
     }
 
     // check to see if orb collides with the top wall

@@ -76,9 +76,11 @@ export default class GameScene extends Phaser.Scene {
 
         this.player = this.physics.add.sprite(800, 621, "player");
         this.playerLives = 5;
-        this.isInvulnerable = false;
         this.lastFired = 0;
         this.fireRate = 360; // milliseconds between shots
+        this.isInvulnerable = false;
+        this.canShoot = true;
+        this._isTransitioning = false;
         this.player.canMove = true;
         this.player.setDepth(2);
         this.keys = this.input.keyboard.addKeys({
@@ -355,7 +357,7 @@ export default class GameScene extends Phaser.Scene {
         this.spawnIndex = 0;
         this.baseMaxEnemies = 5; // starting cap
         this.maxEnemiesHardCap = 30; // never allow more than this
-        this.maxEnemies = this.baseMaxEnemies;
+        this.maxEnemies = this.baseMaxEnemies + Math.floor(this.score / 3);
         this.spawnedEnemies = 0;
         this.scoreText.setScrollFactor(0);
         this.livesText.setScrollFactor(0);
@@ -366,7 +368,11 @@ export default class GameScene extends Phaser.Scene {
             callbackScope: this,
             loop: true,
         });
-
+        // dynamic cap (update once per frame)
+        this.maxEnemies = Math.min(
+            this.baseMaxEnemies + Math.floor(this.score / 3),
+            this.maxEnemiesHardCap
+        );
         this.physics.add.overlap(
             this.bullets,
             this.enemies,
@@ -612,11 +618,6 @@ export default class GameScene extends Phaser.Scene {
             }
         });
 
-        // dynamic cap (update once per frame; cheap)
-        this.maxEnemies = Math.min(
-            this.baseMaxEnemies + Math.floor(this.score / 3),
-            this.maxEnemiesHardCap
-        );
         // take damage
         this.physics.add.overlap(this.player, this.enemies, (player, enemy) => {
             // If the scene is invulnerable or we're already transitioning to death, ignore
@@ -624,14 +625,14 @@ export default class GameScene extends Phaser.Scene {
 
             // Reduce health
             this.playerLives--;
-            // Clamp to zero to avoid negative lives
+            // Clamp to zero
             if (this.playerLives < 0) this.playerLives = 0;
 
             this.audioOuch = this.sound.add("ouch", { volume: 0.4 });
             this.audioOuch.play();
             this.livesText.setText("Lives: " + this.playerLives);
 
-            // If we've reached zero lives, start the fade transition immediately and skip knockback
+            // zero lives, start the fade transition and skip knockback
             if (this.playerLives <= 0) {
                 if (this._isTransitioning) return;
                 this._isTransitioning = true;

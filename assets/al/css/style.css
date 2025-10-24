@@ -6,11 +6,12 @@
 } */
 
 header {
-    position: absolute;
+    margin-top: 80px;
     top: 10px;
     width: 100%;
     text-align: center;
     color: white;
+    font-size: 90px;
 }
 
 .btn {
@@ -39,17 +40,17 @@ a.btn:hover {
     align-items: center;
     justify-content: center;
     background-image: url("../images/blastingBg.jpg");
-    opacity: 0.9;
     background-size: cover;
+    opacity: 0.99;
     background-position: center;
+    height: 70vh;
 }
 
-h1 {
-    font-size: 48px;
+#title {
+    font-size: 80px;
     margin: 0;
     font-family: "Orbitron", sans-serif;
     text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 20px #ff00ff;
-    margin-bottom: 1.5rem;
 }
 
 .canvas-container {
@@ -161,4 +162,34 @@ canvas {
     100% {
         opacity: 1;
     }
+}
+
+.navbar {
+    background: linear-gradient(90deg, #0ff, #f0f, #0ff);
+    border-bottom: 2px solid #f0f;
+    box-shadow: 0 0 15px #0ff;
+    animation: pulseGlow 3s infinite alternate;
+}
+
+.navbar-brand,
+.nav-link {
+    font-family: "Orbitron", sans-serif;
+    color: #fff !important;
+    text-shadow: 0 0 5px #f0f, 0 0 10px #0ff;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #0ff !important;
+    text-shadow: 0 0 10px #0ff, 0 0 20px #f0f;
+}
+
+footer {
+    background: linear-gradient(90deg, #000, #111, #000);
+    border-top: 2px solid #f0f;
+    box-shadow: 0 0 15px #f0f;
+    font-family: "Orbitron", sans-serif;
+    color: #0ff;
+    text-shadow: 0 0 5px #0ff;
+    animation: flickerFooter 2s infinite alternate;
 }

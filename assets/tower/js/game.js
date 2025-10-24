@@ -2,6 +2,7 @@ import MenuScene from "./MenuScene.js";
 import GameScene from "./GameScene.js";
 import DeathScene from "./DeathScene.js";
 import LoadingScene from "./LoadingScene.js";
+import UIScene from "./UIScene.js";
 const config = {
     type: Phaser.AUTO,
     parent: "game-container",
@@ -13,7 +14,7 @@ const config = {
             debug: false,
         },
     },
-    scene: [LoadingScene, MenuScene, GameScene, DeathScene],
+    scene: [LoadingScene, MenuScene, GameScene, DeathScene, UIScene],
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,

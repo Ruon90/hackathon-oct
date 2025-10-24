@@ -11,7 +11,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style2.css">
 </head>
 
 <body>
@@ -26,7 +26,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                        <a class="nav-link" href="index.html">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="tower.html">Tower Defense Game</a>
@@ -35,14 +35,18 @@
                         <a class="nav-link" href="orb-blasting.html">Orb Blasting Game</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="froggy.html">Froggy Game</a>
+                        <a class="nav-link active" aria-current="page" href="froggy.html">Froggy Game</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-
+    <video id="bg-video" autoplay muted loop playsinline>
+        <source src="assets/images/animated-bg.webm" type="video/webm">
+        <!-- Fallback text -->
+        Your browser does not support the background video.
+    </video>
     <h1 id="froggerheader">🐸 Froggy</h1>
 
     <div class="game-wrapper">
@@ -80,6 +84,7 @@
                     <p class="glow-text">⬆️⬇️⬅️➡️ Arrow Keys to move<br>⏸️ Spacebar to pause</p>
                 </div>
             </div>
+
         </div>
     </div>
 

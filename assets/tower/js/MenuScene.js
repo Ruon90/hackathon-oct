@@ -164,5 +164,14 @@ export default class MenuScene extends Phaser.Scene {
         this.menuMusic.play();
         this.rainfall.play();
         this.input.once("pointerdown", () => {});
+
+        // Launch the UI scene (mute/unmute icon) if it's not already running.
+        try {
+            if (!this.scene.isActive("UIScene")) {
+                this.scene.launch("UIScene");
+            }
+        } catch (e) {
+            // ignore if UIScene not present yet
+        }
     }
 }

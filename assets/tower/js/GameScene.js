@@ -491,6 +491,11 @@ export default class GameScene extends Phaser.Scene {
                     en.body.checkCollision.none = false;
             });
         }
+
+        // Ensure the UI scene (mute/unmute) is running so the player has access to audio controls
+        try {
+            if (!this.scene.isActive("UIScene")) this.scene.launch("UIScene");
+        } catch (e) {}
     }
 
     update() {

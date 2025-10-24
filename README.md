@@ -211,7 +211,7 @@ All the images were made either using ai or piskel.
 ## sounds
 
 All mp3 files used in Orb Blasting were downloaded from:
-[text](https://www.myinstants.com/en/search/?name%3Dmp3%20sounds)
+[here](https://www.myinstants.com/en/search/?name%3Dmp3%20sounds)
 
 ## bugs
 

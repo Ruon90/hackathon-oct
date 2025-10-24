@@ -18,16 +18,16 @@ As part of the october hackathon we were tasked with building a games website, t
 -   [Project Planning](#project-planning)
 -   [Features](#features)
     -   [General Features](#general-features)
-        -   [Twump Tower](#navigation-and-hero-section)
-        -   [Orb Blasting](#orb-blasting)
-        -   [Froggy](#froggy)
+    -   [Twump Tower](#twump-tower)
+    -   [Orb Blasting](#orb-blasting)
+    -   [Froggy](#froggy)
     -   [Responsive Design](#responsive-design)
 -   [Built With](#built-with)
     -   [Technology and Languages](#technologies-and-languages)
     -   [Libraries and Frameworks](#libraries-and-frameworks)
     -   [Tools & Programs](#tools-and-programs)
 -   [Development](#deployment)
-    -   [Testing & Validation](#testing--validation)
+    -   [Testing & Validation](#testing-validation)
     -   [AI](#ai)
     -   [Summary](#summary)
 
@@ -39,11 +39,11 @@ As part of the october hackathon we were tasked with building a games website, t
 
 ## General features
 
-### Twump Tower
+## Twump Tower
 
-### Orb Blasting
+## Orb Blasting
 
-### Froggy
+## Froggy
 
 ## Responsive design
 

@@ -103,7 +103,8 @@ export default class GameScene extends Phaser.Scene {
             .setCollideWorldBounds(true)
             .setDrag(500, 500)
             .setScale(0.2);
-
+        this.isInvulnerable = false;
+        this._isTransitioning = false;
         this.bullets = this.physics.add.group({});
         this.enemies = this.physics.add.group();
         // wall collision
@@ -463,6 +464,31 @@ export default class GameScene extends Phaser.Scene {
         this.gameMusic.play();
 
         this._lastScoreForCap = -1;
+
+        // put this near the top of create(), after this.physics.world exists
+        if (this.physics && this.physics.world && this.physics.world.bodies) {
+            // Phaser 3 stores bodies in world.bodies.entries (array-like)
+            const bodies = this.physics.world.bodies.entries || [];
+            bodies.forEach((body) => {
+                try {
+                    // restore collision checking and enable body
+                    if (body && body.checkCollision)
+                        body.checkCollision.none = false;
+                    if (body) body.enable = true;
+                } catch (e) {
+                    // ignore errors for bodies that are being removed concurrently
+                }
+            });
+        }
+
+        // also ensure any existing groups/children have collisions turned on
+        if (this.enemies && this.enemies.children) {
+            this.enemies.children.iterate((en) => {
+                if (!en) return;
+                if (en.body && en.body.checkCollision)
+                    en.body.checkCollision.none = false;
+            });
+        }
     }
 
     update() {

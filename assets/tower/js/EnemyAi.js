@@ -22,7 +22,6 @@ export default class EnemyAi extends Phaser.Physics.Arcade.Sprite {
 
     update(time) {
         const score = Number(this.scene.score) || 0;
-        // tune these multipliers as you like
         this.speed = 110 + score * 1.5; // increase base speed per score
         this.detectionRange = 285 + score * 3; // increase detection per score
 

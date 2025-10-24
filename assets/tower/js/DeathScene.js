@@ -80,6 +80,10 @@ export default class DeathScene extends Phaser.Scene {
             volume: 0.3,
         });
         this.DeathMusic.play();
+        // Make sure the UI scene is running so the mute/unmute control is visible on the death screen
+        try {
+            if (!this.scene.isActive("UIScene")) this.scene.launch("UIScene");
+        } catch (e) {}
         // const flickerOverlay = this.add
         //     .rectangle(
         //         0,

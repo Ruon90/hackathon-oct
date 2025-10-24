@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Arcade Legends</title>
+    <link rel="icon" href="assets/images/favicon-arcade.png" type="image/png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style2.css">
+</head>
+
+<body>
+
+    <!-- Background video: plays muted and loops. Keep file in assets/images/animated-bg.webm -->
+    <video id="bg-video" autoplay muted loop playsinline preload="metadata">
+        <source src="assets/images/animated-bg.webm" type="video/webm">
+        <!-- Fallback text -->
+        Your browser does not support the background video.
+    </video>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Arcade Legends</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index2.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tower2.html">Tower Defense Game</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="orb-blasting2.html">Orb Blasting Game</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="froggy2.html">Froggy Game</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 justify-content-center d-flex">
+                <header class="text-center mt-3">
+                    <!-- Ensure the image is treated as a block and centered inside its container -->
+                    <img src="assets/images/header-nbg.png" alt="Arcade Legends Header"
+                        class="header-image mt-2 mx-auto d-block">
+
+                </header>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container py-5">
+        <div class="row g-4">
+            <!-- Arcade Machine 1 -->
+            <div class="col-md-4">
+                <div class="card arcade-card h-100">
+                    <a href="tower2.html"> <img src="assets/images/pink-arcade-edit.png" class="card-img-top"
+                            alt="Arcade Machine 1" loading="lazy" decoding="async">
+                    </a>
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Twump Tower</h5>
+                        <a href="tower2.html" class="btn btn-outline-info mt-2">Play Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arcade Machine 2 -->
+            <div class="col-md-4">
+                <div class="card arcade-card h-100">
+                    <a href="orb-blasting2.html"> <img src="assets/images/yellow-arcade.png" class="card-img-top"
+                            id="card-yellow" alt="Arcade Machine 2" loading="lazy" decoding="async"></a>
+
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Orb Blasting</h5>
+                        <a href="orb-blasting2.html" class="btn btn-outline-info mt-2">Play Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arcade Machine 3 -->
+            <div class="col-md-4">
+                <div class="card arcade-card h-100">
+                    <a href="froggy2.html"> <img src="assets/images/blue-arcade1.png" class="card-img-top"
+                            id="card-blue" alt="Arcade Machine 3" loading="lazy" decoding="async"></a>
+
+                    <div class="card-body text-center">
+                        <!-- <h5 class="card-title">Froggy</h5> -->
+                        <h5 class="card-title">Froggy</h5>
+                        <a href="froggy2.html" class="btn btn-outline-info mt-2">Play Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <div class="container">
+            <p class="mb-0">&copy; 2025 Arcade Legends. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>

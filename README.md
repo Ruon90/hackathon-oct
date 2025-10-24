@@ -181,6 +181,58 @@ I think the website as an overall is of good quality and I'm happy with how my g
 
 ## Orb Blasting
 
+Orb blasting is a retro-inspired parody bubble shooter game based on Basic Bust-a-Move / Puzzle Bobble / Bubble Shooter HTML and JavaScript Game by Steven Lambert. Styled with a retro synthwave energy, strategic gameplay, and vibrant pixel art. So anyway, I started orb blasting.
+
+## How to Play
+
+⦁ Aim using arrow Keys
+⦁ Shoot with Spacebar
+⦁ Match 3+ orbs of the same colour to pop them
+⦁ Disconnected orbs fall for bonus points
+⦁ Advance levels by clearing the grid
+⦁ Track your score and progress in real time
+
+## Features
+
+⦁ Synthwave-style visuals with glowing orbs and sprite
+⦁ Responsive cannon with loaded orb and sound effects
+⦁ Score tracking, level progression(randomised layout), and floating particle effects
+⦁ Accessible design with clear colour contrast and keyboard controls
+⦁ UI panels for controls and rules
+
+## Fonts
+
+The primary font used in Orb Blasting is Orbitron.
+
+## Images & Sprites
+
+All the images were made either using ai or piskel.
+
+## sounds
+
+All mp3 files used in Orb Blasting were downloaded from:
+[text](https://www.myinstants.com/en/search/?name%3Dmp3%20sounds)
+
+## bugs
+
+Trying to have it so you could only shoot colours of orbs that remained in the grid was a challenge, I managed to make it somewhat work except sometimes if you match 3 of the last of that colour if the next orb is the same colour then you will have to match 3 again. i'm sure given more time i could fix the issue, however it is a small problem that barely comes up.
+
+## Technical
+
+Built using:
+
+-   JavaScript
+-   HTML
+-   CSS
+
+## AI Usage
+
+This game uses images that were made or altered using A.I Copilot
+
+## Conclusion
+
+If it was not for the orginal design by Steven Lambert, Orb blasting would be pretty basic. After spending a while with the original code I managed to undestand how it works and what I wanted it to do and look like. In the end I think it looks decent and as for the whole site and games, Its been a productive learning experience that shows our teams effort to make what we planned with little help and just beginner knowledge.
+
 ## Froggy Game Development - Andy
 
 The Froggy game was developed as part of our hackathon project, we decided to a create a retro themed website that contained 3 games. Froggy was designed as a throwback to retro arcade gameplay while integrating modern web features. Inspired by classic cross-the-road mechanics, Froggy challenges players to guide a cheerful frog across busy traffic lanes using intuitive controls and immersive sound design.

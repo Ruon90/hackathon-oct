@@ -8,9 +8,19 @@
     text-align: center;
 } */
 .header-image {
-    max-width: 600px;
-    height: auto;
-    align-self: center;
+    /* Make the header image responsive: allow it to scale down on small screens
+       while preserving aspect ratio. Use a sensible max-width for large viewports. */
+    width: 100%; /* fill available space up to the max-width */
+    max-width: 600px; /* cap size on large screens */
+    height: auto; /* preserve aspect ratio */
+    display: block;
+    margin: 0 auto; /* center when narrower than container */
+}
+
+@media (max-width: 480px) {
+    .header-image {
+        max-width: 95vw; /* ensure it never overflows very small screens */
+    }
 }
 body {
     /* Background video is handled with a <video> element positioned behind content */
@@ -313,5 +323,15 @@ footer {
 @media (min-width: 768px) {
     .mobile-controls {
         display: none;
+    }
+}
+
+/* Respect user's reduced-motion preference and reduce heavy animations */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
     }
 }

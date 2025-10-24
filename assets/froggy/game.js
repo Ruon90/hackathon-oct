@@ -224,3 +224,62 @@ document.getElementById("playAgainBtn").addEventListener("click", () => {
     generateCars(level);
     startGame();
 });
+document.getElementById("btn-up").addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    moveFroggy("up");
+});
+
+document.getElementById("btn-down").addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    moveFroggy("down");
+});
+
+document.getElementById("btn-left").addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    moveFroggy("left");
+});
+
+document.getElementById("btn-right").addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    moveFroggy("right");
+});
+
+document.getElementById("btn-pause").addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    togglePause();
+});
+
+function moveFroggy(direction) {
+    const step = 20;
+    let moved = false;
+
+    if (direction === "up") {
+        frog.y -= step;
+        moved = true;
+    }
+    if (direction === "down") {
+        frog.y += step;
+        moved = true;
+    }
+    if (direction === "left") {
+        frog.x -= step;
+        moved = true;
+    }
+    if (direction === "right") {
+        frog.x += step;
+        moved = true;
+    }
+
+    if (moved) {
+        hopSound.currentTime = 0;
+        hopSound.play();
+    }
+}
+
+function togglePause() {
+    if (isGameRunning) {
+        pauseGame();
+    } else {
+        startGame();
+    }
+}

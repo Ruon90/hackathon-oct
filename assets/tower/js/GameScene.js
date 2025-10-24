@@ -376,6 +376,7 @@ export default class GameScene extends Phaser.Scene {
         );
 
         this.input.on("pointermove", (pointer) => {
+            if (this._isTransitioning) return;
             this.mouseX = pointer.worldX;
             this.mouseY = pointer.worldY;
         });
@@ -426,6 +427,7 @@ export default class GameScene extends Phaser.Scene {
             repeat: -1,
         });
         this.input.on("pointerdown", () => {
+            if (this.canShoot === false) return;
             const now = this.time.now;
 
             if (this.player) {
@@ -535,7 +537,13 @@ export default class GameScene extends Phaser.Scene {
         // If the shoot animation is currently playing, don't override it with walk/idle
         if (!isShooting) {
             if (moving) {
-                this.player.play("walk", true);
+                // don't play the walk animation while we're transitioning to death
+                if (this._isTransitioning) {
+                    // keep player in idle frame while transitioning
+                    this.player.setFrame(0);
+                } else {
+                    this.player.play("walk", true);
+                }
             } else {
                 this.player.setFrame(0); // reset to idle frame
             }
@@ -624,6 +632,7 @@ export default class GameScene extends Phaser.Scene {
                 this._isTransitioning = true;
                 this.player.canMove = false;
                 this.isInvulnerable = true;
+                this.canShoot = false;
                 this.deathSound = this.sound.add("deathSound", {
                     loop: false,
                     volume: 0.6,
@@ -722,6 +731,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     fireBullet() {
+        if (this.canShoot === false) return;
         const bullet = this.bullets.create(
             this.player.x,
             this.player.y,
